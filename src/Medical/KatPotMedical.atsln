@@ -1,0 +1,17 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Atmel Studio Solution File, Format Version 11.00
+Project("{18226A42-8477-4023-8AD2-40C49DA407C9}") = "KatPotMedical", "KatPotMedical.asmproj", "{DAD66E68-8DA7-4A4B-AF67-D579B2DA53D4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		default|AVR = default|AVR
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DAD66E68-8DA7-4A4B-AF67-D579B2DA53D4}.default|AVR.ActiveCfg = default|AVR
+		{DAD66E68-8DA7-4A4B-AF67-D579B2DA53D4}.default|AVR.Build.0 = default|AVR
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
