@@ -349,7 +349,7 @@ namespace KatPotMonitor {
 	private: static bool ComPortConnected = false;
 	public:  static String^ SelectedCommPort = L"        ";
 	public:  bool   UserExitRequested;
-	public: static int TestSelected=0;
+	public: static int TestSelected=1;
 	public: static int DegreeSelected=0;
 
 
@@ -631,6 +631,7 @@ namespace KatPotMonitor {
 			this->GridOffToolStripMenuItem->Size = System::Drawing::Size(116, 22);
 			this->GridOffToolStripMenuItem->Text = L"Grid Off";
 			this->GridOffToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::GridOffToolStripMenuItem_Click);
+			this->GridOffToolStripMenuItem->Checked = true;
 			// 
 			// captureOptionsToolStripMenuItem
 			// 
@@ -666,6 +667,7 @@ namespace KatPotMonitor {
 			this->shearTestToolStripMenuItem->Size = System::Drawing::Size(128, 22);
 			this->shearTestToolStripMenuItem->Text = L"Shear Test";
 			this->shearTestToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::shearTestToolStripMenuItem_Click);
+			this->shearTestToolStripMenuItem->Checked = false;
 
 			// 
 			// peelTestToolStripMenuItem
@@ -674,6 +676,7 @@ namespace KatPotMonitor {
 			this->peelTestToolStripMenuItem->Size = System::Drawing::Size(128, 22);
 			this->peelTestToolStripMenuItem->Text = L"Peel Test";
 			this->peelTestToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::peelTestToolStripMenuItem_Click);
+			this->peelTestToolStripMenuItem->Checked = true;
 
 			// 
 			// testDegreeToolStripMenuItem
@@ -690,6 +693,7 @@ namespace KatPotMonitor {
 			this->degreeToolStripMenuItem->Size = System::Drawing::Size(132, 22);
 			this->degreeToolStripMenuItem->Text = L"90 Degree";
 			this->degreeToolStripMenuItem->Click += gcnew System::EventHandler(this, &Form1::degree90ToolStripMenuItem_Click);
+			this->degreeToolStripMenuItem->Checked = false;
 
 			// 
 			// degreeToolStripMenuItem1
@@ -698,6 +702,7 @@ namespace KatPotMonitor {
 			this->degreeToolStripMenuItem1->Size = System::Drawing::Size(132, 22);
 			this->degreeToolStripMenuItem1->Text = L"180 Degree";
 			this->degreeToolStripMenuItem1->Click += gcnew System::EventHandler(this, &Form1::degree180ToolStripMenuItem_Click);
+			this->degreeToolStripMenuItem1->Checked = true;
 
 			// 
 			// testSetupToolStripMenuItem
@@ -1017,7 +1022,7 @@ private: System::Void saveFileToolStripMenuItem_Click(System::Object^  sender, S
 				{
 
 					myStream->Close();
-					MyXLStest(saveFileDialog1->FileName);
+					MyXLStest(saveFileDialog1->FileName, this->TestSelected);
 				// Code to write the stream goes here.
 				//this->chart1->SaveImage(myStream, System::Windows::Forms::DataVisualization::Charting::ChartImageFormat::Png);
 				//myStream->Close();
@@ -1029,25 +1034,41 @@ private: System::Void GridOnToolStripMenuItem_Click(System::Object^  sender, Sys
 			//turn on Grid
 			this->chartArea1->AxisX->MajorGrid->LineWidth = 1;
 			this->chartArea1->AxisY->MajorGrid->LineWidth = 1;
+			this->GridOffToolStripMenuItem->Checked = false;
+			this->GridOnToolStripMenuItem->Checked = true;
+
 
 		 }
 private: System::Void GridOffToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
 			//turn off Grid
 			this->chartArea1->AxisX->MajorGrid->LineWidth = 0;
 			this->chartArea1->AxisY->MajorGrid->LineWidth = 0;
+			this->GridOffToolStripMenuItem->Checked = true;
+			this->GridOnToolStripMenuItem->Checked = false;
+
 		 }
 
 private: System::Void shearTestToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
 			this->TestSelected=0;
+			this->shearTestToolStripMenuItem->Checked = true;
+			this->peelTestToolStripMenuItem->Checked = false;
+
 		 }
 private: System::Void peelTestToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
 			this->TestSelected=1;
+			this->shearTestToolStripMenuItem->Checked = false;
+			this->peelTestToolStripMenuItem->Checked = true;
 		 }
 
 private: System::Void degree90ToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+			this->degreeToolStripMenuItem1->Checked = false;
+			this->degreeToolStripMenuItem->Checked = true;
 			this->DegreeSelected=0;
 		 }
 private: System::Void degree180ToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+
+			this->degreeToolStripMenuItem->Checked = false;
+			this->degreeToolStripMenuItem1->Checked = true;
 			this->DegreeSelected=1;
 		 }
 

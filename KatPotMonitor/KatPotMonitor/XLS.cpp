@@ -4,7 +4,7 @@
 //#include "stdafx.h"
 using namespace System;
 
-void MyXLStest(String^ OutFileName);
+void MyXLStest(String^ OutFileName, int TestSelected);
 #include "Form1.h"
 
 //using namespace KatPotMonitor;
@@ -85,7 +85,7 @@ extern gcroot<KatPotMonitor::Form1^> main_form;
 			//workbook->SaveAs(Filename, Microsoft::Office::Interop::Excel::XlFileFormat::xlWorkbookDefault, Type::Missing, Type::Missing, true, false, XlSaveAsAccessMode::xlNoChange, XlSaveConflictResolution::xlLocalSessionChanges, Type::Missing, Type::Missing);
 		}
 
-		public: void XLDrawChart(int left, int top, int  width, int height, String^ R1, String^ R2 , int index)
+		public: void XLDrawChart(int left, int top, int  width, int height, String^ R1, String^ R2 , int index, int TestType)
 		{
 
 			//myxlChart = (Microsoft::Office::Interop::Excel::ChartObjects^) worksheet->ChartObjects(Type::Missing);
@@ -97,12 +97,27 @@ extern gcroot<KatPotMonitor::Form1^> main_form;
             myChart->Chart->SetSourceData(workSheet_range, Microsoft::Office::Interop::Excel::XlRowCol::xlColumns);
             myChart->Chart->ChartType = Microsoft::Office::Interop::Excel::XlChartType::xlLine;
 			myChart->Chart->HasTitle = true;
-			myChart->Chart->ChartTitle->Text = "Sample Vs Load For Test-" + (index+1).ToString();
+			if (TestType==1)
+			{
+				myChart->Chart->ChartTitle->Text = "Sample Vs Load For Test-" + (index+1).ToString();
+			}
+			else
+			{
+				myChart->Chart->ChartTitle->Text = "Sample Vs Time For Test-" + (index+1).ToString();
+			}
+
 
 			//set y axis
 			myAxis  = (Microsoft::Office::Interop::Excel::Axis^) myChart->Chart->Axes(Microsoft::Office::Interop::Excel::XlAxisType::xlValue, Microsoft::Office::Interop::Excel::XlAxisGroup::xlPrimary);
 			myAxis->HasTitle = true;
-			myAxis->AxisTitle->Text = "Load";
+			if (TestType==1)
+			{
+				myAxis->AxisTitle->Text = "Load";
+			}
+			else
+			{
+				myAxis->AxisTitle->Text = "Time";
+			}
 
 			//set x axis
 			myAxis  = (Microsoft::Office::Interop::Excel::Axis^) myChart->Chart->Axes(Microsoft::Office::Interop::Excel::XlAxisType::xlCategory, Microsoft::Office::Interop::Excel::XlAxisGroup::xlPrimary);
@@ -199,7 +214,7 @@ fcolor)
     };
 	
 
-void MyXLStest(String^ OutFileName)
+void MyXLStest(String^ OutFileName,int TestSelected)
 {
 	int i;
 	int StartIndex, EndIndex;
@@ -323,9 +338,9 @@ void MyXLStest(String^ OutFileName)
 
 
 
-	excell_app->XLDrawChart(600, 100, 400, 400, "E" + StartIndex.ToString(), "E" + (StartIndex + NumSamples[0]) .ToString(),0);
-	excell_app->XLDrawChart(600, 600, 400, 400, "G" + StartIndex.ToString(), "G" + (StartIndex + NumSamples[1]) .ToString(),1);
-	excell_app->XLDrawChart(600, 1100, 400, 400, "I" + StartIndex.ToString(), "I" + (StartIndex + NumSamples[2]) .ToString(),2);
+	excell_app->XLDrawChart(600, 100, 400, 400, "E" + StartIndex.ToString(), "E" + (StartIndex + NumSamples[0]) .ToString(),0,TestSelected);
+	excell_app->XLDrawChart(600, 600, 400, 400, "G" + StartIndex.ToString(), "G" + (StartIndex + NumSamples[1]) .ToString(),1,TestSelected);
+	excell_app->XLDrawChart(600, 1100, 400, 400, "I" + StartIndex.ToString(), "I" + (StartIndex + NumSamples[2]) .ToString(),2,TestSelected);
 
 	//add Data to cells
 	//excell_app->addData(7, 2, "114287", "B7", "B7","#,##0");

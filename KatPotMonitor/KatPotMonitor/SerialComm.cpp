@@ -21,7 +21,7 @@ using namespace System::Threading;
 
 //#define EMULATE_SERIAL_PORT     1
 
-int InitSerialPort( SerialPort^ _serialPort, String^ PortName, int NumPorts)
+int InitSerialPort( SerialPort^ _serialPort, String^ PortName, int NumPorts, int TestSelected)
 {
 
 #if defined(EMULATE_SERIAL_PORT)
@@ -125,30 +125,72 @@ int InitSerialPort( SerialPort^ _serialPort, String^ PortName, int NumPorts)
 			return SERIAL_PORT_READTIMEOUT;
 		}
 
-			
-		if ((cTemp[1] == 0x0D) && (cTemp[0] == 0x0A)&&(iTemp > 6))
+		
+		if (TestSelected == 1) //peel test
 		{
-			Synced = true;
-			break;
-		} else {
-			//shift delay line
-			cTemp[1] = cTemp[0];
-			cTemp[2] = cTemp[1];
-			cTemp[3] = cTemp[2];
-			cTemp[4] = cTemp[3];
-			cTemp[5] = cTemp[4];
+			if ((cTemp[1] == 0x0D) && (cTemp[0] == 0x0A)&&(iTemp > 6))
+			{
+				Synced = true;
+				break;
+			} else {
+				//shift delay line
+				cTemp[1] = cTemp[0];
+				cTemp[2] = cTemp[1];
+				cTemp[3] = cTemp[2];
+				cTemp[4] = cTemp[3];
+				cTemp[5] = cTemp[4];
+
+			}
+
+			iTemp++;
+			if (iTemp >= MAX_SYNC_BYTES)
+				break;
+		}
+	
+		else {
+			//shear test
+			if ((cTemp[2] == 'T') && (cTemp[1] == '1')&& (cTemp[0] == '='))
+			{
+				int i;
+				Synced = true;
+				//skipnext 8 + 11 + 11 bytes
+				for (i=0;i<8+11+11;i++)
+				{
+					try {
+						cTemp[0] = _serialPort->ReadByte();
+			
+					}
+					catch (TimeoutException^ ex) {
+						Synced = false;
+						break;
+					}
+
+				}
+				break;
+
+
+			} else {
+				//shift delay line
+				cTemp[1] = cTemp[0];
+				cTemp[2] = cTemp[1];
+				cTemp[3] = cTemp[2];
+				cTemp[4] = cTemp[3];
+				cTemp[5] = cTemp[4];
+
+			}
+
+			iTemp++;
+			if (iTemp >= MAX_SYNC_BYTES)
+				break;
 		}
 
-		iTemp++;
-		if (iTemp >= MAX_SYNC_BYTES)
-			break;
 	}
 
 
 			
 	delete cTemp;
 	if (Synced)
-		return SERIAL_PORT_SUCCESS;
+			return SERIAL_PORT_SUCCESS;
 	else {			
 		_serialPort->Close();
 		return SERIAL_PORT_INVALID_RESPONSE;
@@ -156,7 +198,7 @@ int InitSerialPort( SerialPort^ _serialPort, String^ PortName, int NumPorts)
 
 }
 
-bool GetSerialPortPacket( SerialPort^ _serialPort, array<unsigned char>^ readArray)
+bool GetSerialPortPacket( SerialPort^ _serialPort, array<unsigned char>^ readArray, int TestSelected)
 {
 
 #if defined(EMULATE_SERIAL_PORT)
@@ -209,12 +251,20 @@ bool GetSerialPortPacket( SerialPort^ _serialPort, array<unsigned char>^ readArr
 #else
 
 	int BytesRead = 0;
+	int BytesToRead;
 
-	while (BytesRead < SERIAL_PORT_PACKET_SIZE)
+	if (TestSelected)
+		BytesToRead = 11*3;
+	else
+		BytesToRead = SERIAL_PORT_PACKET_SIZE;
+
+
+
+	while (BytesRead < BytesToRead)
 	{
 
 		try {
-			BytesRead += _serialPort->Read(readArray, BytesRead, SERIAL_PORT_PACKET_SIZE - BytesRead );
+			BytesRead += _serialPort->Read(readArray, BytesRead, BytesToRead - BytesRead );
 			
 		}
 		catch (TimeoutException^ ex) {
