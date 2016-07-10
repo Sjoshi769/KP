@@ -1023,9 +1023,9 @@ private: System::Void saveFileToolStripMenuItem_Click(System::Object^  sender, S
 
 					myStream->Close();
 					MyXLStest(saveFileDialog1->FileName, this->TestSelected);
-				// Code to write the stream goes here.
-				//this->chart1->SaveImage(myStream, System::Windows::Forms::DataVisualization::Charting::ChartImageFormat::Png);
-				//myStream->Close();
+					// Code to write the stream goes here.
+					//this->chart1->SaveImage(myStream, System::Windows::Forms::DataVisualization::Charting::ChartImageFormat::Png);
+					//myStream->Close();
 				}
 			}
 

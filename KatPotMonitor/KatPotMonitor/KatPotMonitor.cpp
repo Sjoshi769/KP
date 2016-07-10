@@ -33,6 +33,8 @@ gcroot<array<int>^> NumSamples;
 //gcroot<array<array<int>^>^> SampleArray;
 gcroot<array<array<int>^>^> SampleArray;
 
+bool SimulateSerialPort = false;
+
 void newFormThread()
 {
 	main_form = gcnew Form1();
@@ -53,7 +55,7 @@ int AsciiToInt(array<unsigned char>^ SerialPortReadArray, int offset)
 [STAThread]
 int main(array<System::String ^> ^args)
 {
-	int Val;
+	int Val=0;
 	Thread^ formThread;
 	SerialPort^ _serialPort;
 	int SuccessCount = 0;
@@ -107,6 +109,13 @@ int main(array<System::String ^> ^args)
 	//initialize Serial Port
 	_serialPort = gcnew SerialPort;
 
+	if (SimulateSerialPort)
+	{
+		AveragingStarted = true;
+		NumSamples[0]=0;
+		main_form->ClearChart(0);
+
+	}
 	
 	while (1)
 	{
@@ -128,6 +137,7 @@ int main(array<System::String ^> ^args)
 				//serialPortReadThread->Abort();
 				//serialPortReadThread->Join();
 				_serialPort->Close();
+				main_form->SerialPortValidated = false;
 			}
 			break;
 		}
@@ -184,9 +194,6 @@ int main(array<System::String ^> ^args)
 						Val = AsciiToInt(SerialPortReadArray , 25);
 						SampleArray[2][NumSamples[2]++]=Val;
 						main_form->UpdateChartPoint(2,Val);
-
-						
-
 					}
 					else 
 					{
@@ -194,7 +201,6 @@ int main(array<System::String ^> ^args)
 					}
 
 				}
-
 				else
 				{
 					status = SERIAL_PORT_SYNC_LOST;
@@ -226,7 +232,7 @@ int main(array<System::String ^> ^args)
 
 
 
-		if (!main_form->SerialPortValidated)
+		if ((!main_form->SerialPortValidated) && formThread->IsAlive && (!SimulateSerialPort))
 		{
 			if (_serialPort)
 				_serialPort->Close();
@@ -242,17 +248,33 @@ int main(array<System::String ^> ^args)
 				Thread::Sleep(500);
 		}
 
-		if (0) //formThread->IsAlive)
+		if (SimulateSerialPort && AveragingStarted)
 		{
 			NewLoadValues[0] = 4*Val+0;
 			NewLoadValues[1] = 4*Val+1;
 			NewLoadValues[2] = 4*Val+2;
 			NewLoadValues[3] = 4*Val+3;
 
-			main_form->UpdateChartPoint(0,NewLoadValues[0]);
-			main_form->UpdateChartPoint(0,NewLoadValues[1]);
-			main_form->UpdateChartPoint(0,NewLoadValues[2]);
-			main_form->UpdateChartPoint(0,NewLoadValues[3]);
+			main_form->UpdateChartPoint(TestCount,NewLoadValues[0]);
+			main_form->UpdateChartPoint(TestCount,NewLoadValues[1]);
+			main_form->UpdateChartPoint(TestCount,NewLoadValues[2]);
+			main_form->UpdateChartPoint(TestCount,NewLoadValues[3]);
+			Val += 4;
+			NumSamples[TestCount]+=4;
+			if (Val >= 4*10)
+			{
+				TestCount++;
+				if (TestCount < 3)
+				{
+					NumSamples[TestCount] = 0;
+					main_form->ClearChart(TestCount);
+					Val = 0;
+				}
+				else
+					AveragingStarted = false;
+
+			}
+
 			Thread::Sleep(1000);
 		}
 
