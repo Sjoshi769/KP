@@ -4,7 +4,7 @@
 .EQU    NUM_SAMPLES_FOR_AVERAGING=1
 .EQU    ADC_BUFF_SIZE=16*NUM_SAMPLES_FOR_AVERAGING
 .EQU    ADC_ADJUSTMENT_FACTOR=10001
-.EQU    MAX_CLOCK_COUNT_VALUE=(20001  + ADC_ADJUSTMENT_FACTOR)
+.EQU    MAX_CLOCK_COUNT_VALUE=(20003  + ADC_ADJUSTMENT_FACTOR)
 .EQU    MAX_LOAD_VAL=9999
 
 
@@ -76,16 +76,29 @@ TIM1_CAPT:
         
         cpi  r17, high(MAX_CLOCK_COUNT_VALUE)
     
-        ;if higher, need to discard
-        brpl  DiscardADCVal
-    
-        ;if equal, need to compare lower val
-        brne ADCApplyAdjustmentFactor
-    
+        ;if lower, no need to clip
+        brmi  ADCApplyAdjustmentFactor
+
+		breq  CompareLower
+
+		;here it is higher, clip it
+		jmp	  ClipADCValToMax
+
+
+CompareLower:
+
         cpi  r16, low(MAX_CLOCK_COUNT_VALUE)
         brsh DiscardADCVal
     
+        ;if lower or equal, no need to clip
+        brlo  ADCApplyAdjustmentFactor
+
+
+    
+ClipADCValToMax:
         
+        ldi  r17, high(MAX_CLOCK_COUNT_VALUE)
+        ldi  r16, low(MAX_CLOCK_COUNT_VALUE)
         
         
 ADCApplyAdjustmentFactor:        
@@ -139,7 +152,6 @@ ADCStoreVal:
 
 		sts 	ADCBuffDipstick,		r26
 
-DiscardADCVal:
 
 		;now clear TIMER1 count for next run
         clr r17
