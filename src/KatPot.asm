@@ -113,6 +113,8 @@ RESET:
 
 	call Initialize_Timers
 
+	call Initialize_IODelayBuffer
+
 	call Initialize_UART
 
 	call Initialize_CalibParams

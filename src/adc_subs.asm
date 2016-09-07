@@ -88,7 +88,6 @@ TIM1_CAPT:
 CompareLower:
 
         cpi  r16, low(MAX_CLOCK_COUNT_VALUE)
-        brsh DiscardADCVal
     
         ;if lower or equal, no need to clip
         brlo  ADCApplyAdjustmentFactor

@@ -14,6 +14,23 @@
 	.ENDMACRO
 
 
+	.MACRO	READ_INPUT_PIN
+		in		r17,	PINB
+		andi	r17,	1
+	.ENDMACRO	
+
+	.MACRO	CLR_OUTPUT_PIN
+	    in		r17,	PORTB
+		cbr		r17, 2
+		out		PORTB,	r17
+	.ENDMACRO	
+
+	.MACRO	SET_OUTPUT_PIN
+	    in		r17,	PORTB
+		sbr		r17, 2
+		out		PORTB,	r17
+	.ENDMACRO	
+
 /************** subroutines to handle timer functions *****/
 
 
@@ -143,6 +160,30 @@ Initialize_Timers:
 
 	ret
 
+/****************************************************************/
+Initialize_IODelayBuffer:
+	ldi		r26,	low(IOBitBuffer)
+	ldi		r27,	high(IOBitBuffer)
+
+	sts		(IOBitBufferRdWrPtr), r26
+	sts		(IOBitBufferRdWrPtr+1), r27
+
+	clr		r16
+	sts		(IOBitBufferTickCounterHigh), r16
+	ldi		r17,	1
+	sts		(IOBitBufferTickCounterLow), r17
+
+	ldi		r17, (IOBitBufferEnd - IOBitBuffer)
+
+	IOBuff_Clear_Loop:
+		st	x+,	r16
+		dec	r17
+		brne IOBuff_Clear_Loop
+
+
+
+	ret
+
 
 /****************************************************************/
 /**** ISR to implement display segment scanning *****************/
@@ -244,6 +285,82 @@ SisplaySegCountSet:
 TimerNoOneSecCheck:
 
 
+	//implement i/o delay logic
+
+	lds		r30,	IOBitBufferRdWrPtr
+	lds		r31,	IOBitBufferRdWrPtr + 1
+	ld		r17,	z
+	lds		r18,	IOBitBufferTickCounterLow
+	and		r17,	r18
+	breq	SetOutputHi
+
+	//here input is high, so output should be low
+	CLR_OUTPUT_PIN
+
+	jmp	    IODelay_Common
+	SetOutputHi:
+
+	SET_OUTPUT_PIN
+
+
+	IODelay_Common:
+
+	//now read input pin
+	READ_INPUT_PIN
+	breq	InputIsZero
+
+	//set the pin to 1
+	ld		r17,	z
+	or		r17,	r18
+	jmp		InputPinRead
+
+
+	InputIsZero:
+
+	ld		r17,	z
+	com		r18
+	and		r17,	r18
+	com		r18
+
+	InputPinRead:
+
+	st		z+,	r17
+
+	clc
+	//update mask
+	rol		r18
+
+	brcc	NoNeedToUpdate
+
+	//Here need to update the pointer and mask
+	ldi		r18,	1
+	sts		IOBitBufferTickCounterLow,	r18
+
+	//updated pointer is in z
+	//check for wrap around
+	cpi		r30,	low(IOBitBufferEnd)
+	brne	NoNeedToWrapAround
+
+	cpi		r31,	high(IOBitBufferEnd)
+	brne	NoNeedToWrapAround
+
+	ldi		r30,	low(IOBitBuffer)
+	ldi		r31,	high(IOBitBuffer)
+
+
+
+	NoNeedToWrapAround:
+
+	clr		r17
+	st		z,	r17
+
+	sts		(IOBitBufferRdWrPtr),	r30
+	sts		(IOBitBufferRdWrPtr+1),	r31
+
+
+
+	NoNeedToUpdate:
+
 	pop r17
 	out SREG, r17
 
@@ -277,6 +394,14 @@ TimerOneSecondFlag:			.db	 0
 TimerOneSecCount:			.dw  0
 //CRITICAL ORDER ENDS
 
+    .dseg
+//timer interrupt rate is 490 Hz. In 2 sec, we have 490*2 interrupts.
+//at each interrupt, read and store input bit. So total buffer size for 2 sec delay is 490*2/8 = 122 bytes
+IOBitBuffer:				.byte  (122)
+IOBitBufferEnd:
+IOBitBufferRdWrPtr:			.dw    (IOBitBuffer)
+IOBitBufferTickCounterLow:	.db	   (0)
+IOBitBufferTickCounterHigh:	.db	   (0)
 
 
 
