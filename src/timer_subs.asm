@@ -21,13 +21,13 @@
 
 	.MACRO	CLR_OUTPUT_PIN
 	    in		r17,	PORTB
-		cbr		r17, 2
+		cbr		r17,	 0x04
 		out		PORTB,	r17
 	.ENDMACRO	
 
 	.MACRO	SET_OUTPUT_PIN
 	    in		r17,	PORTB
-		sbr		r17, 2
+		sbr		r17,	0x04
 		out		PORTB,	r17
 	.ENDMACRO	
 
@@ -168,12 +168,11 @@ Initialize_IODelayBuffer:
 	sts		(IOBitBufferRdWrPtr), r26
 	sts		(IOBitBufferRdWrPtr+1), r27
 
-	clr		r16
-	sts		(IOBitBufferTickCounterHigh), r16
 	ldi		r17,	1
-	sts		(IOBitBufferTickCounterLow), r17
+	sts		(IOBitBufferTickCounter), r17
 
 	ldi		r17, (IOBitBufferEnd - IOBitBuffer)
+	clr		r16
 
 	IOBuff_Clear_Loop:
 		st	x+,	r16
@@ -290,7 +289,7 @@ TimerNoOneSecCheck:
 	lds		r30,	IOBitBufferRdWrPtr
 	lds		r31,	IOBitBufferRdWrPtr + 1
 	ld		r17,	z
-	lds		r18,	IOBitBufferTickCounterLow
+	lds		r18,	IOBitBufferTickCounter
 	and		r17,	r18
 	breq	SetOutputHi
 
@@ -307,20 +306,20 @@ TimerNoOneSecCheck:
 
 	//now read input pin
 	READ_INPUT_PIN
-	breq	InputIsZero
+	ld		r17,	z
+
+	breq	InputPinZero
 
 	//set the pin to 1
-	ld		r17,	z
 	or		r17,	r18
 	jmp		InputPinRead
 
-
-	InputIsZero:
-
-	ld		r17,	z
+	InputPinZero:
 	com		r18
-	and		r17,	r18
+	and		r17,   r18
 	com		r18
+
+
 
 	InputPinRead:
 
@@ -334,7 +333,6 @@ TimerNoOneSecCheck:
 
 	//Here need to update the pointer and mask
 	ldi		r18,	1
-	sts		IOBitBufferTickCounterLow,	r18
 
 	//updated pointer is in z
 	//check for wrap around
@@ -348,11 +346,8 @@ TimerNoOneSecCheck:
 	ldi		r31,	high(IOBitBuffer)
 
 
-
 	NoNeedToWrapAround:
 
-	clr		r17
-	st		z,	r17
 
 	sts		(IOBitBufferRdWrPtr),	r30
 	sts		(IOBitBufferRdWrPtr+1),	r31
@@ -360,6 +355,8 @@ TimerNoOneSecCheck:
 
 
 	NoNeedToUpdate:
+
+	sts		IOBitBufferTickCounter,	r18
 
 	pop r17
 	out SREG, r17
@@ -400,8 +397,7 @@ TimerOneSecCount:			.dw  0
 IOBitBuffer:				.byte  (122)
 IOBitBufferEnd:
 IOBitBufferRdWrPtr:			.dw    (IOBitBuffer)
-IOBitBufferTickCounterLow:	.db	   (0)
-IOBitBufferTickCounterHigh:	.db	   (0)
+IOBitBufferTickCounter:		.db	   (0)
 
 
 

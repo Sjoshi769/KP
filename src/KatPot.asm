@@ -87,7 +87,9 @@ RESET:
 	;port B bits 3-7 are used as display digit drivers and 
 	;should be configured as outptut
         ;PB1 is input (T1)
-	ldi r17, $F8
+		;PB0 is digital input
+		;PB2 is delayed output
+	ldi r17, $FC
 	out DDRB, r17
 	out PORTB, r18
 
