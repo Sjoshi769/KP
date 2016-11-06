@@ -896,6 +896,16 @@ namespace KatPotMonitor {
 			this->chart1->Legends->Add(legend1);
 			this->chart1->Location = System::Drawing::Point(12, 42);
 			this->chart1->Name = L"chart1";
+
+			this->chart1->ChartAreas[0]->CursorX->IsUserSelectionEnabled = true;
+			this->chart1->ChartAreas[0]->CursorY->IsUserSelectionEnabled = false;
+			this->chart1->ChartAreas[0]->AxisX->ScaleView->Zoomable = true;
+			this->chart1->ChartAreas[0]->AxisY->ScaleView->Zoomable = false;
+			//this->chart1->ChartAreas[0]->AxisX->ScaleView->AutoScroll = true;
+			//this->chart1->ChartAreas[0]->AxisY->ScaleView->Scroll = false;
+
+
+
 			for (int i = 0; i < MAX_NUM_TESTS; i++)
 			{
 				this->series1[i]->ChartArea = L"ChartArea1";

@@ -33,7 +33,11 @@ gcroot<array<int>^> NumSamples;
 //gcroot<array<array<int>^>^> SampleArray;
 gcroot<array<array<int>^>^> SampleArray;
 
+#if defined(EMULATE_SERIAL_PORT)
+bool SimulateSerialPort = true;
+#else
 bool SimulateSerialPort = false;
+#endif
 
 void newFormThread()
 {
