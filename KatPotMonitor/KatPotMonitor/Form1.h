@@ -320,20 +320,20 @@ namespace KatPotMonitor {
 	}
 
 
-	delegate void UpdateChartPointDelegate(int SeriesIndex, int Val);
+	delegate void UpdateChartPointDelegate(int SeriesIndex, int Xval, int Yval);
 
 	public:
-	void UpdateChartPoint(int SeriesIndex, int Val)
+	void UpdateChartPoint(int SeriesIndex, int Xval, int Yval)
 	{
 		if (this->chart1->InvokeRequired)
 		{
 			UpdateChartPointDelegate^ d = 
 				gcnew UpdateChartPointDelegate(this, &Form1::UpdateChartPoint);
-			this->Invoke(d,SeriesIndex, Val);
+			this->Invoke(d,SeriesIndex, Xval, Yval);
 			return;
 		}
 		else {
-			this->series1[SeriesIndex]->Points->AddY(Val);
+			this->series1[SeriesIndex]->Points->AddXY(Xval,Yval);
 		}
 	}
 
@@ -901,17 +901,22 @@ namespace KatPotMonitor {
 			this->chart1->ChartAreas[0]->CursorY->IsUserSelectionEnabled = false;
 			this->chart1->ChartAreas[0]->AxisX->ScaleView->Zoomable = true;
 			this->chart1->ChartAreas[0]->AxisY->ScaleView->Zoomable = false;
+			this->chart1->ChartAreas[0]->AxisX->Minimum = 0;
+			this->chart1->ChartAreas[0]->AxisX->Title = "Time (mili seconds)";
+			this->chart1->ChartAreas[0]->AxisY->Title = "Load (Newton)";
 			//this->chart1->ChartAreas[0]->AxisX->ScaleView->AutoScroll = true;
 			//this->chart1->ChartAreas[0]->AxisY->ScaleView->Scroll = false;
+			//this->chart1->ChartAreas[0]->AxisX->ScaleView->
 
-
+			this->chart1->ChartAreas[0]->AxisX->IntervalType = System::Windows::Forms::DataVisualization::Charting::DateTimeIntervalType::Number;
+			this->chart1->ChartAreas[0]->AxisX->Interval = 1000;
 
 			for (int i = 0; i < MAX_NUM_TESTS; i++)
 			{
 				this->series1[i]->ChartArea = L"ChartArea1";
 				this->series1[i]->ChartType = System::Windows::Forms::DataVisualization::Charting::SeriesChartType::FastLine;
 				this->series1[i]->Legend = L"Legend1";
-				this->series1[i]->Name = L"Sample  Vs Load Test-" + (i+1).ToString();
+				this->series1[i]->Name = L"Time  Vs Load Test-" + (i+1).ToString();
 				this->chart1->Series->Add(series1[i]);
 				this->chart1->Size = System::Drawing::Size(984, 357);
 				this->chart1->TabIndex = 1;
@@ -1021,6 +1026,10 @@ private: System::Void loadFileToolStripMenuItem_Click(System::Object^  sender, S
 
 		 }
 private: System::Void saveFileToolStripMenuItem_Click(System::Object^  sender, System::EventArgs^  e) {
+
+			double xStart = this->chartArea1->CursorX->SelectionStart;
+			double xEnd = this->chartArea1->CursorX->SelectionEnd;
+
 			Stream^ myStream;
 			SaveFileDialog^ saveFileDialog1 = gcnew SaveFileDialog;
 			saveFileDialog1->Filter = "png files (*.png)|*.png|All files (*.*)|*.*";

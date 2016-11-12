@@ -5,7 +5,7 @@
 
 #define SERIAL_PORT_PACKET_SIZE 6
 #define MAX_NUM_TESTS	3
-
+#define TIME_SCALE      (1000/5)
 typedef enum WirelessMonitorStatus
 {
 	SERIAL_PORT_SUCCESS=0,
@@ -20,8 +20,6 @@ typedef enum WirelessMonitorStatus
 	SERIAL_PORT_IO_ERROR,
 	SERIAL_PORT_ALREADY_OPEN_ERROR,
 	SERIAL_PORT_SYNC_LOST,
-
-
 };
 
 

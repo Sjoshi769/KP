@@ -67,6 +67,7 @@ int main(array<System::String ^> ^args)
 	int PacketCount[NUM_CH_TO_SHOW] = { 0, 0, 0, 0, 0, 0};
 	bool AveragingStarted=false;
 	int TestCount=0;
+	int Offset = 0;
 
 	//Thread^ serialPortReadThread;
 	//Thread^ serialPortWriteThread;
@@ -168,6 +169,7 @@ int main(array<System::String ^> ^args)
 						{
 								AveragingStarted = false;
 								TestCount++;
+								Offset = 0;
 								if (TestCount == MAX_NUM_TESTS)
 									TestCount = 0;
 						}
@@ -175,7 +177,8 @@ int main(array<System::String ^> ^args)
 						{
 							Val =  (SerialPortReadArray[0]  - '0')*1000 + (SerialPortReadArray[1]  - '0')*100 + \
 								(SerialPortReadArray[2]  - '0')*10 + (SerialPortReadArray[3]  - '0');
-							main_form->UpdateChartPoint(TestCount,Val);
+							main_form->UpdateChartPoint(TestCount,Offset, Val);
+							Offset += TIME_SCALE;
 							if (NumSamples[TestCount]< MAX_NUM_SAMPLES)
 								SampleArray[TestCount][NumSamples[TestCount]++]=Val;
 						}
@@ -191,13 +194,14 @@ int main(array<System::String ^> ^args)
 					{
 						Val = AsciiToInt(SerialPortReadArray ,3);
 						SampleArray[0][NumSamples[0]++]=Val;
-						main_form->UpdateChartPoint(0,Val);
+						main_form->UpdateChartPoint(0,Offset, Val);
 						Val = AsciiToInt(SerialPortReadArray ,14);
 						SampleArray[1][NumSamples[1]++]=Val;
-						main_form->UpdateChartPoint(1,Val);
+						main_form->UpdateChartPoint(1,Offset, Val);
 						Val = AsciiToInt(SerialPortReadArray , 25);
 						SampleArray[2][NumSamples[2]++]=Val;
-						main_form->UpdateChartPoint(2,Val);
+						main_form->UpdateChartPoint(2,Offset, Val);
+						Offset += TIME_SCALE;
 					}
 					else 
 					{
@@ -258,11 +262,15 @@ int main(array<System::String ^> ^args)
 			NewLoadValues[1] = 4*Val+1;
 			NewLoadValues[2] = 4*Val+2;
 			NewLoadValues[3] = 4*Val+3;
+			Offset = TIME_SCALE*Val;
 
-			main_form->UpdateChartPoint(TestCount,NewLoadValues[0]);
-			main_form->UpdateChartPoint(TestCount,NewLoadValues[1]);
-			main_form->UpdateChartPoint(TestCount,NewLoadValues[2]);
-			main_form->UpdateChartPoint(TestCount,NewLoadValues[3]);
+			main_form->UpdateChartPoint(TestCount, Offset, NewLoadValues[0]);
+			Offset += TIME_SCALE;
+			main_form->UpdateChartPoint(TestCount, Offset, NewLoadValues[1]);
+			Offset += TIME_SCALE;
+			main_form->UpdateChartPoint(TestCount, Offset, NewLoadValues[2]);
+			Offset += TIME_SCALE;
+			main_form->UpdateChartPoint(TestCount, Offset, NewLoadValues[3]);
 			Val += 4;
 			NumSamples[TestCount]+=4;
 			if (Val >= 4*10)

@@ -99,11 +99,11 @@ extern gcroot<KatPotMonitor::Form1^> main_form;
 			myChart->Chart->HasTitle = true;
 			if (TestType==1)
 			{
-				myChart->Chart->ChartTitle->Text = "Sample Vs Load For Test-" + (index+1).ToString();
+				myChart->Chart->ChartTitle->Text = "Time Vs Load For Test-" + (index+1).ToString();
 			}
 			else
 			{
-				myChart->Chart->ChartTitle->Text = "Sample Vs Time For Test-" + (index+1).ToString();
+				myChart->Chart->ChartTitle->Text = "Time Vs Load For Test-" + (index+1).ToString();
 			}
 
 
