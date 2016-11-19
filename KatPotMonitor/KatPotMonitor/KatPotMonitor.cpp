@@ -273,7 +273,7 @@ int main(array<System::String ^> ^args)
 			main_form->UpdateChartPoint(TestCount, Offset, NewLoadValues[3]);
 			Val += 4;
 			NumSamples[TestCount]+=4;
-			if (Val >= 4*10)
+			if (Val >= 4*2)
 			{
 				TestCount++;
 				if (TestCount < 3)

@@ -43,7 +43,19 @@ namespace KatPotMonitor {
 	private: void Chart1_SelectionRangeChanged(System::Object^ sender, CursorEventArgs^ e)
 	{
 		//DoSomething(/*some arguments if you need them*/);
+		RangeStartIndex  = this->chart1->ChartAreas[0]->AxisX->PixelPositionToValue(RangeStart);
+		RangeEndIndex = this->chart1->ChartAreas[0]->AxisX->PixelPositionToValue(RangeEnd);
+		RangeSelected = true;
 	}
+
+	private: void Chart1_SelectionRangeChanging(System::Object^ sender, CursorEventArgs^ e)
+	{
+		//DoSomething(/*some arguments if you need them*/);
+		RangeStart = this->chartArea1->CursorX->SelectionStart;
+		RangeEnd = this->chartArea1->CursorX->SelectionEnd;
+		RangeSelected = true;
+	}
+
 
 	delegate void ClearChartDelegate(int index);
 
@@ -358,7 +370,11 @@ namespace KatPotMonitor {
 	public:  bool   UserExitRequested;
 	public: static int TestSelected=1;
 	public: static int DegreeSelected=0;
-
+	private: static double RangeStart = 0;
+	private: static double RangeEnd = 0;
+	private: static int RangeStartIndex = 0;
+	private: static int RangeEndIndex = 0;
+	private: static bool RangeSelected = false;
 
 
 	protected:
@@ -911,7 +927,8 @@ namespace KatPotMonitor {
 			this->chart1->ChartAreas[0]->AxisX->Minimum = 0;
 			this->chart1->ChartAreas[0]->AxisX->Title = "Time (mili seconds)";
 			this->chart1->ChartAreas[0]->AxisY->Title = "Load (Newton)";
-			this->chart1->SelectionRangeChanged  += gcnew System::EventHandler<CursorEventArgs^>(this, &Form1::Chart1_SelectionRangeChanged);
+			this->chart1->SelectionRangeChanged += gcnew System::EventHandler<CursorEventArgs^>(this, &Form1::Chart1_SelectionRangeChanged);
+			this->chart1->SelectionRangeChanging += gcnew System::EventHandler<CursorEventArgs^>(this, &Form1::Chart1_SelectionRangeChanging);
 			//this->chart1->ChartAreas[0]->AxisX->ScaleView->AutoScroll = true;
 			//this->chart1->ChartAreas[0]->AxisY->ScaleView->Scroll = false;
 			//this->chart1->ChartAreas[0]->AxisX->ScaleView->
