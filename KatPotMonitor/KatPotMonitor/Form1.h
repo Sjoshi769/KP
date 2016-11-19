@@ -7,6 +7,7 @@ namespace KatPotMonitor {
 	using namespace System;
 	using namespace System::ComponentModel;
 	using namespace System::Collections;
+	using namespace System::Collections::Generic;
 	using namespace System::Windows::Forms;
 	using namespace System::Windows::Forms::DataVisualization;
 	using namespace System::Data;
@@ -14,7 +15,7 @@ namespace KatPotMonitor {
 	using namespace System::IO;
 	using namespace System::IO::Ports;
 	using namespace std;
-
+	using namespace System::Windows::Forms::DataVisualization::Charting;
 
 	/// <summary>
 	/// Summary for Form1
@@ -36,6 +37,12 @@ namespace KatPotMonitor {
 		//main_form = gcnew Form1();
 		Application::Run(this);
 		//return main_form;
+	}
+
+
+	private: void Chart1_SelectionRangeChanged(System::Object^ sender, CursorEventArgs^ e)
+	{
+		//DoSomething(/*some arguments if you need them*/);
 	}
 
 	delegate void ClearChartDelegate(int index);
@@ -904,6 +911,7 @@ namespace KatPotMonitor {
 			this->chart1->ChartAreas[0]->AxisX->Minimum = 0;
 			this->chart1->ChartAreas[0]->AxisX->Title = "Time (mili seconds)";
 			this->chart1->ChartAreas[0]->AxisY->Title = "Load (Newton)";
+			this->chart1->SelectionRangeChanged  += gcnew System::EventHandler<CursorEventArgs^>(this, &Form1::Chart1_SelectionRangeChanged);
 			//this->chart1->ChartAreas[0]->AxisX->ScaleView->AutoScroll = true;
 			//this->chart1->ChartAreas[0]->AxisY->ScaleView->Scroll = false;
 			//this->chart1->ChartAreas[0]->AxisX->ScaleView->

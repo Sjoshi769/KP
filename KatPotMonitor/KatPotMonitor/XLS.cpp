@@ -63,7 +63,7 @@ extern gcroot<KatPotMonitor::Form1^> main_form;
         {
             try
             {     
-                app = gcnew Microsoft::Office::Interop::Excel::Application;
+                app = gcnew Microsoft::Office::Interop::Excel::ApplicationClass();
                 app->Visible = true;
                 workbook = app->Workbooks->Add(1);
                 worksheet = (Microsoft::Office::Interop::Excel::Worksheet^)workbook->Sheets[1];
@@ -369,7 +369,7 @@ void MyXLStest(String^ OutFileName,int TestSelected)
 
 
 
-	excell_app->CloseWorkBook(true,OutFileName,false);
+	//excell_app->CloseWorkBook(true,OutFileName,false);
 	
 
 	delete excell_app;
