@@ -43,8 +43,26 @@ namespace KatPotMonitor {
 	private: void Chart1_SelectionRangeChanged(System::Object^ sender, CursorEventArgs^ e)
 	{
 		//DoSomething(/*some arguments if you need them*/);
-		RangeStartIndex  = this->chart1->ChartAreas[0]->AxisX->PixelPositionToValue(RangeStart);
-		RangeEndIndex = this->chart1->ChartAreas[0]->AxisX->PixelPositionToValue(RangeEnd);
+		double X = this->chart1->Location.X;
+		double Width = this->chart1->Size.Width;
+		double XStartRelative = RangeStart - X;
+		XStartRelative /= Width;
+		if (XStartRelative < 0)
+			XStartRelative = 0;
+		if (XStartRelative > 100)
+			XStartRelative = 100;
+
+		RangeStartIndex  = this->chart1->ChartAreas[0]->AxisX->PositionToValue(XStartRelative);
+
+		double XEndRelative = RangeEnd- X;
+		XEndRelative /= Width;
+		if (XEndRelative < 0)
+			XEndRelative = 0;
+		if (XEndRelative > 100)
+			XEndRelative = 100;
+
+		RangeEndIndex = this->chart1->ChartAreas[0]->AxisX->PositionToValue(XEndRelative);
+
 		RangeSelected = true;
 	}
 
@@ -53,7 +71,10 @@ namespace KatPotMonitor {
 		//DoSomething(/*some arguments if you need them*/);
 		RangeStart = this->chartArea1->CursorX->SelectionStart;
 		RangeEnd = this->chartArea1->CursorX->SelectionEnd;
-		RangeSelected = true;
+		//double selectEnd = chart.ChartAreas["ChartArea1"].CursorX.SelectionEnd;
+
+		//RangeEnd = this->chartArea1->CursorX->SelectionEnd;
+		//RangeSelected = true;
 	}
 
 
@@ -356,11 +377,18 @@ namespace KatPotMonitor {
 		}
 	}
 
-
-
-
-
-
+	public: void DisplayStatistics()
+	{
+		int i;
+		this->legend1->Title = L"";
+		for (i = 0; i < MAX_NUM_TESTS; i++)
+		{
+			this->legend1->Title += this->legend1->Title->Format("Min for Test-{0} = {1} \n", (i + 1), SeriesMin[i]);
+			this->legend1->Title += this->legend1->Title->Format("Max for Test-{0} = {1} \n", (i + 1), SeriesMax[i]);
+			this->legend1->Title += this->legend1->Title->Format("Average for Test-{0} = {1} \n\n", (i + 1), SeriesAverage[i]);
+		}
+		this->legend1->Title += this->legend1->Title->Format("\n\n");
+	}
 
 	public: bool SerialPortValidated;
 	private: static array<String^>^ SystemserialPorts = nullptr;
@@ -375,6 +403,13 @@ namespace KatPotMonitor {
 	private: static int RangeStartIndex = 0;
 	private: static int RangeEndIndex = 0;
 	private: static bool RangeSelected = false;
+	public:  static array<double>^ SeriesMin;
+	public:  static array<double>^ SeriesMax;
+	public:  static array<double>^ SeriesAverage;
+
+			 
+
+
 
 
 	protected:
@@ -916,9 +951,11 @@ namespace KatPotMonitor {
 			this->chartArea1->Name = L"ChartArea1";
 			this->chart1->ChartAreas->Add(chartArea1);
 			this->legend1->Name = L"Legend1";
+			this->legend1->TitleFont =gcnew System::Drawing::Font("Arial", 10, System::Drawing::FontStyle::Regular);
 			this->chart1->Legends->Add(legend1);
 			this->chart1->Location = System::Drawing::Point(12, 42);
 			this->chart1->Name = L"chart1";
+
 
 			this->chart1->ChartAreas[0]->CursorX->IsUserSelectionEnabled = true;
 			this->chart1->ChartAreas[0]->CursorY->IsUserSelectionEnabled = false;
@@ -935,6 +972,10 @@ namespace KatPotMonitor {
 
 			this->chart1->ChartAreas[0]->AxisX->IntervalType = System::Windows::Forms::DataVisualization::Charting::DateTimeIntervalType::Number;
 			this->chart1->ChartAreas[0]->AxisX->Interval = 1000;
+			this->chart1->Size = System::Drawing::Size(984, 357);
+			this->chart1->TabIndex = 1;
+			this->chart1->Text = L"chart1";
+
 
 			for (int i = 0; i < MAX_NUM_TESTS; i++)
 			{
@@ -943,9 +984,6 @@ namespace KatPotMonitor {
 				this->series1[i]->Legend = L"Legend1";
 				this->series1[i]->Name = L"Time  Vs Load Test-" + (i+1).ToString();
 				this->chart1->Series->Add(series1[i]);
-				this->chart1->Size = System::Drawing::Size(984, 357);
-				this->chart1->TabIndex = 1;
-				this->chart1->Text = L"chart1";
 			}
 			// 
 			// label1
@@ -959,6 +997,12 @@ namespace KatPotMonitor {
 			// 
 			//Other
 			UserExitRequested=false;
+			SeriesMin     = gcnew array<double>(MAX_NUM_TESTS);
+			SeriesMax     = gcnew array<double>(MAX_NUM_TESTS);
+			SeriesAverage = gcnew array<double>(MAX_NUM_TESTS);
+
+			DisplayStatistics();
+			
 			// 
 			// Form1
 			// 
