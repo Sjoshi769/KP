@@ -42,35 +42,63 @@ namespace KatPotMonitor {
 
 	private: void Chart1_SelectionRangeChanged(System::Object^ sender, CursorEventArgs^ e)
 	{
-		//DoSomething(/*some arguments if you need them*/);
-		double X = this->chart1->Location.X;
-		double Width = this->chart1->Size.Width;
-		double XStartRelative = RangeStart - X;
-		XStartRelative /= Width;
-		if (XStartRelative < 0)
-			XStartRelative = 0;
-		if (XStartRelative > 100)
-			XStartRelative = 100;
+		//Update Statistics
+		int StartIndex; 
+		int EndIndex;
+		int SeriesIndex;
 
-		RangeStartIndex  = this->chart1->ChartAreas[0]->AxisX->PositionToValue(XStartRelative);
+		if (this->RangeStart != this->RangeStart) //true for NaN
+		{
+			StartIndex = 0;
+			EndIndex = 10000000000000;
+		}
+		else
+		{
+			StartIndex = this->RangeStart / TIME_SCALE;
+			EndIndex = this->RangeEnd / TIME_SCALE;
+		}
 
-		double XEndRelative = RangeEnd- X;
-		XEndRelative /= Width;
-		if (XEndRelative < 0)
-			XEndRelative = 0;
-		if (XEndRelative > 100)
-			XEndRelative = 100;
 
-		RangeEndIndex = this->chart1->ChartAreas[0]->AxisX->PositionToValue(XEndRelative);
+		for (SeriesIndex = 0; SeriesIndex < MAX_NUM_TESTS; SeriesIndex++)
+		{
+			int SeriesStartIndex;
+			int SeriesEndIndex;
+			int index;
+			int SerisSize = this->series1[SeriesIndex]->Points->Count-1;
+			SeriesStartIndex = StartIndex;
+			SeriesEndIndex = EndIndex;
 
-		RangeSelected = true;
+			if (SeriesStartIndex > SerisSize)
+				SeriesStartIndex = SerisSize;
+			if (SeriesEndIndex > SerisSize)
+				SeriesEndIndex = SerisSize;
+
+
+			this->SeriesMin[SeriesIndex] = this->series1[SeriesIndex]->Points[SeriesStartIndex]->YValues[0];
+			this->SeriesMax[SeriesIndex] = this->series1[SeriesIndex]->Points[SeriesStartIndex]->YValues[0];
+			this->SeriesAverage[SeriesIndex] = this->series1[SeriesIndex]->Points[SeriesStartIndex]->YValues[0];
+
+			for (index = SeriesStartIndex+1; index < SeriesEndIndex; index++)
+			{
+				if (SeriesMin[SeriesIndex] > this->series1[SeriesIndex]->Points[index]->YValues[0])
+					SeriesMin[SeriesIndex] = this->series1[SeriesIndex]->Points[index]->YValues[0];
+				if (SeriesMax[SeriesIndex] < this->series1[SeriesIndex]->Points[index]->YValues[0])
+					SeriesMax[SeriesIndex] = this->series1[SeriesIndex]->Points[index]->YValues[0];
+				SeriesAverage[SeriesIndex] += this->series1[SeriesIndex]->Points[index]->YValues[0];
+			}
+			int SeriesSize = SeriesEndIndex - SeriesStartIndex;
+			if (SeriesSize > 0)
+				SeriesAverage[SeriesIndex] /= SeriesSize;
+		}
+
+		DisplayStatistics();
 	}
 
 	private: void Chart1_SelectionRangeChanging(System::Object^ sender, CursorEventArgs^ e)
 	{
 		//DoSomething(/*some arguments if you need them*/);
-		RangeStart = this->chartArea1->CursorX->SelectionStart;
-		RangeEnd = this->chartArea1->CursorX->SelectionEnd;
+		this->RangeStart = this->chartArea1->CursorX->SelectionStart;
+		this->RangeEnd = this->chartArea1->CursorX->SelectionEnd;
 		//double selectEnd = chart.ChartAreas["ChartArea1"].CursorX.SelectionEnd;
 
 		//RangeEnd = this->chartArea1->CursorX->SelectionEnd;
@@ -384,9 +412,9 @@ namespace KatPotMonitor {
 		this->legend1->Title = L"";
 		for (i = 0; i < MAX_NUM_TESTS; i++)
 		{
-			this->legend1->Title += this->legend1->Title->Format("Min for Test-{0} = {1} \n", (i + 1), SeriesMin[i]);
-			this->legend1->Title += this->legend1->Title->Format("Max for Test-{0} = {1} \n", (i + 1), SeriesMax[i]);
-			this->legend1->Title += this->legend1->Title->Format("Average for Test-{0} = {1} \n\n", (i + 1), SeriesAverage[i]);
+			this->legend1->Title += this->legend1->Title->Format("Min for Test-{0} = {1:0000.0}\n", (i + 1), SeriesMin[i]);
+			this->legend1->Title += this->legend1->Title->Format("Max for Test-{0} = {1:0000.0}\n", (i + 1), SeriesMax[i]);
+			this->legend1->Title += this->legend1->Title->Format("Avg for Test-{0} = {1:0000.0}\n\n", (i + 1), SeriesAverage[i]);
 		}
 		this->legend1->Title += this->legend1->Title->Format("\n\n");
 	}
