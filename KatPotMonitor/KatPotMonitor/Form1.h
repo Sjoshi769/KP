@@ -373,6 +373,7 @@ namespace KatPotMonitor {
 			return;
 		}
 		else {
+			UpdateStatistics(SeriesIndex, Yval);
 			this->series1[SeriesIndex]->Points->AddXY(Xval,Yval);
 		}
 	}
@@ -388,6 +389,30 @@ namespace KatPotMonitor {
 			this->legend1->Title += this->legend1->Title->Format("Average for Test-{0} = {1} \n\n", (i + 1), SeriesAverage[i]);
 		}
 		this->legend1->Title += this->legend1->Title->Format("\n\n");
+	}
+
+	public: void UpdateStatistics(int TestIndex, double Value)
+	{
+		int Size;
+		Size = this->series1[TestIndex]->Points->Count;
+		if (Size == 0)
+		{
+			SeriesAverageSum[TestIndex] = Value;
+			SeriesMin[TestIndex] = Value;
+			SeriesMax[TestIndex] = Value;
+			SeriesAverage[TestIndex] = Value;
+		}
+		else
+		{
+			SeriesAverageSum[TestIndex] += Value;
+			if (Value < SeriesMin[TestIndex])
+				SeriesMin[TestIndex] = Value;
+			else if (Value > SeriesMax[TestIndex])
+				SeriesMax[TestIndex] = Value;
+			SeriesAverage[TestIndex] = SeriesAverageSum[TestIndex] / (Size + 1);
+		}
+
+		DisplayStatistics();
 	}
 
 	public: bool SerialPortValidated;
@@ -406,10 +431,7 @@ namespace KatPotMonitor {
 	public:  static array<double>^ SeriesMin;
 	public:  static array<double>^ SeriesMax;
 	public:  static array<double>^ SeriesAverage;
-
-			 
-
-
+	public:  static array<double>^ SeriesAverageSum;
 
 
 	protected:
@@ -1000,6 +1022,7 @@ namespace KatPotMonitor {
 			SeriesMin     = gcnew array<double>(MAX_NUM_TESTS);
 			SeriesMax     = gcnew array<double>(MAX_NUM_TESTS);
 			SeriesAverage = gcnew array<double>(MAX_NUM_TESTS);
+			SeriesAverageSum = gcnew array<double>(MAX_NUM_TESTS);
 
 			DisplayStatistics();
 			
