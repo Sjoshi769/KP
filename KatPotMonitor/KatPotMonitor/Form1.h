@@ -1152,19 +1152,40 @@ private: System::Void saveFileToolStripMenuItem_Click(System::Object^  sender, S
 
 			Stream^ myStream;
 			SaveFileDialog^ saveFileDialog1 = gcnew SaveFileDialog;
-			saveFileDialog1->Filter = "png files (*.png)|*.png|All files (*.*)|*.*";
+			saveFileDialog1->Filter = "png files (*.png)|*.png|xls files (*.xls)|*.xls|All files (*.*)|*.*";
 			saveFileDialog1->FilterIndex = 2;
 			saveFileDialog1->RestoreDirectory = true;
+			saveFileDialog1->AddExtension = true;
 			if ( saveFileDialog1->ShowDialog() == System::Windows::Forms::DialogResult::OK )
 			{
 				if ( (myStream = saveFileDialog1->OpenFile()) != nullptr )
 				{
+					String^ extension = System::IO::Path::GetExtension(saveFileDialog1->FileName);
 
-					myStream->Close();
-					MyXLStest(saveFileDialog1->FileName, this->TestSelected);
-					// Code to write the stream goes here.
-					//this->chart1->SaveImage(myStream, System::Windows::Forms::DataVisualization::Charting::ChartImageFormat::Png);
-					//myStream->Close();
+					
+					{
+						//if Strcmp('png', extension)
+						{
+							//this->chart1->SaveImage(myStream, System::Windows::Forms::DataVisualization::Charting::ChartImageFormat::Png);
+							//myStream->Close();
+							//break;
+						}
+						//case 'xls':
+						{
+							MyXLStest(saveFileDialog1->FileName, this->TestSelected);
+							myStream->Close();
+							//break;
+						}
+						//default:
+						{
+
+							//myStream->Close();
+							//MyXLStest(saveFileDialog1->FileName, this->TestSelected);
+							// Code to write the stream goes here.
+							//this->chart1->SaveImage(myStream, System::Windows::Forms::DataVisualization::Charting::ChartImageFormat::Png);
+							//myStream->Close();
+						}
+					}
 				}
 			}
 
