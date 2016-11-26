@@ -41,6 +41,7 @@ extern gcroot<KatPotMonitor::Form1^> main_form;
 		private: gcroot<Microsoft::Office::Interop::Excel::ChartObjects^> myxlChart;
 		private: gcroot<Microsoft::Office::Interop::Excel::ChartObject^> myChart;
 	    private: gcroot<Microsoft::Office::Interop::Excel::Axis^>  myAxis;
+	    private: gcroot<Microsoft::Office::Interop::Excel::Series^> mySeries;
 
 	
 		public: CreateExcelDoc()
@@ -90,20 +91,27 @@ extern gcroot<KatPotMonitor::Form1^> main_form;
 
 			//myxlChart = (Microsoft::Office::Interop::Excel::ChartObjects^) worksheet->ChartObjects(Type::Missing);
 			myChart =  myxlChart->Add(left, top, width, height);
+            workSheet_range = worksheet->Range[R1, R2];
 			
 
+			
 
-            workSheet_range = worksheet->Range[R1, R2];
             myChart->Chart->SetSourceData(workSheet_range, Microsoft::Office::Interop::Excel::XlRowCol::xlColumns);
-            myChart->Chart->ChartType = Microsoft::Office::Interop::Excel::XlChartType::xlLine;
+
+
+			//myChart->Chart->ChartType = Microsoft::Office::Interop::Excel::XlChartType::xlLine;
+			myChart->Chart->ChartType = Microsoft::Office::Interop::Excel::XlChartType::xlXYScatterSmooth;	
 			myChart->Chart->HasTitle = true;
+			mySeries = (Microsoft::Office::Interop::Excel::Series^) myChart->Chart->SeriesCollection(1);
+			mySeries->XValues = (workSheet_range);
+
 			if (TestType==1)
 			{
-				myChart->Chart->ChartTitle->Text = "Time Vs Load For Test-" + (index+1).ToString();
+				myChart->Chart->ChartTitle->Text = "Load Vs Time For Test-" + (index+1).ToString();
 			}
 			else
 			{
-				myChart->Chart->ChartTitle->Text = "Time Vs Load For Test-" + (index+1).ToString();
+				myChart->Chart->ChartTitle->Text = "Load Vs Time For Test-" + (index+1).ToString();
 			}
 
 
@@ -116,13 +124,13 @@ extern gcroot<KatPotMonitor::Form1^> main_form;
 			}
 			else
 			{
-				myAxis->AxisTitle->Text = "Time";
+				myAxis->AxisTitle->Text = "Time (mili seconds)";
 			}
 
 			//set x axis
 			myAxis  = (Microsoft::Office::Interop::Excel::Axis^) myChart->Chart->Axes(Microsoft::Office::Interop::Excel::XlAxisType::xlCategory, Microsoft::Office::Interop::Excel::XlAxisGroup::xlPrimary);
 			myAxis->HasTitle = true;
-			myAxis->AxisTitle->Text = "Sample Number";
+			myAxis->AxisTitle->Text = "Time (mili seconds)";
 
 
 			//myChart->Chart->Visible = Microsoft::Office::Interop::Excel::XlSheetVisibility::xlSheetVisible;
@@ -206,7 +214,7 @@ fcolor)
         {
             worksheet->Cells[row, col] = data;
             workSheet_range = worksheet->Range[cell1, cell2];
-			 workSheet_range->Merge(mergeColumns);
+			workSheet_range->Merge(mergeColumns);
             workSheet_range->Borders->Color = System::Drawing::Color::Black.ToArgb();
             workSheet_range->NumberFormat = format;
         }    
@@ -304,7 +312,7 @@ void MyXLStest(String^ OutFileName,int TestSelected)
 	for (i=0;i <max;i++)
 	{
 		int temp = StartIndex + i;
-		excell_app->addData(temp, 3, i.ToString(), "C" + temp.ToString(), "D" + temp.ToString(), 1, "");
+		excell_app->addData(temp, 3, (i*TIME_SCALE).ToString(), "C" + temp.ToString(), "D" + temp.ToString(), 1, "");
 	}
 
 	EndIndex = StartIndex + i;
