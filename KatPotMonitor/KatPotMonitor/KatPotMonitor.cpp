@@ -262,15 +262,16 @@ int main(array<System::String ^> ^args)
 			NewLoadValues[1] = 4*Val+1;
 			NewLoadValues[2] = 4*Val+2;
 			NewLoadValues[3] = 4*Val+3;
-			Offset = TIME_SCALE*Val;
+			
 
-			main_form->UpdateChartPoint(TestCount, Offset, NewLoadValues[0]);
-			Offset += TIME_SCALE;
-			main_form->UpdateChartPoint(TestCount, Offset, NewLoadValues[1]);
-			Offset += TIME_SCALE;
-			main_form->UpdateChartPoint(TestCount, Offset, NewLoadValues[2]);
-			Offset += TIME_SCALE;
-			main_form->UpdateChartPoint(TestCount, Offset, NewLoadValues[3]);
+			main_form->UpdateChartPoint(TestCount, Offset*TIME_SCALE, NewLoadValues[0]);
+			SampleArray[TestCount][Offset++] = NewLoadValues[0];
+			main_form->UpdateChartPoint(TestCount, Offset*TIME_SCALE, NewLoadValues[1]);
+			SampleArray[TestCount][Offset++] = NewLoadValues[1];
+			main_form->UpdateChartPoint(TestCount, Offset*TIME_SCALE, NewLoadValues[2]);
+			SampleArray[TestCount][Offset++] = NewLoadValues[2];
+			main_form->UpdateChartPoint(TestCount, Offset*TIME_SCALE, NewLoadValues[3]);
+			SampleArray[TestCount][Offset++] = NewLoadValues[3];
 			Val += 4;
 			NumSamples[TestCount]+=4;
 			if (Val >= 4*2)
@@ -280,7 +281,8 @@ int main(array<System::String ^> ^args)
 				{
 					NumSamples[TestCount] = 0;
 					main_form->ClearChart(TestCount);
-					Val = 0;
+					Val = TestCount;
+					Offset = 0;
 				}
 				else
 					AveragingStarted = false;
