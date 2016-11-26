@@ -58,6 +58,9 @@ namespace KatPotMonitor {
 			EndIndex = this->RangeEnd / TIME_SCALE;
 		}
 
+		this->RangeStartIndex = StartIndex;
+		this->RangeEndIndex = EndIndex;
+
 
 		for (SeriesIndex = 0; SeriesIndex < MAX_NUM_TESTS; SeriesIndex++)
 		{
@@ -72,6 +75,12 @@ namespace KatPotMonitor {
 				SeriesStartIndex = SerisSize;
 			if (SeriesEndIndex > SerisSize)
 				SeriesEndIndex = SerisSize;
+
+			if (this->RangeStartIndex < SeriesStartIndex)
+				this->RangeStartIndex = SeriesStartIndex;
+			if (this->RangeEndIndex > SeriesEndIndex)
+				this->RangeStartIndex = SeriesEndIndex;
+
 
 
 			this->SeriesMin[SeriesIndex] = this->series1[SeriesIndex]->Points[SeriesStartIndex]->YValues[0];
@@ -1172,7 +1181,7 @@ private: System::Void saveFileToolStripMenuItem_Click(System::Object^  sender, S
 						}
 						//case 'xls':
 						{
-							MyXLStest(saveFileDialog1->FileName, this->TestSelected);
+							MyXLStest(saveFileDialog1->FileName, this->TestSelected, this->RangeStartIndex, this->RangeEndIndex);
 							myStream->Close();
 							//break;
 						}

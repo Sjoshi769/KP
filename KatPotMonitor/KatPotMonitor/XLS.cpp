@@ -4,7 +4,7 @@
 //#include "stdafx.h"
 using namespace System;
 
-void MyXLStest(String^ OutFileName, int TestSelected);
+void MyXLStest(String^ OutFileName, int TestSelected, int FormStartIndex, int FormEndIndex);
 #include "Form1.h"
 
 //using namespace KatPotMonitor;
@@ -228,7 +228,7 @@ fcolor)
     };
 	
 
-void MyXLStest(String^ OutFileName,int TestSelected)
+void MyXLStest(String^ OutFileName,int TestSelected, int FormStartIndex, int FormEndIndex)
 {
 	int i;
 	int StartIndex, EndIndex;
@@ -308,14 +308,16 @@ void MyXLStest(String^ OutFileName,int TestSelected)
 	StartIndex = 13;
 
 	//add first series
-	int max = NumSamples[0];
-	if (NumSamples[1] > max)
-		max = NumSamples[1];
-	if (NumSamples[2] > max)
-		max = NumSamples[2];
+	//int max = NumSamples[0];
+	//if (NumSamples[1] > max)
+	//	max = NumSamples[1];
+	//if (NumSamples[2] > max)
+	//	max = NumSamples[2];
+
+	int NumSamps = FormEndIndex - FormStartIndex;
 
 	//add index
-	for (i=0;i <max;i++)
+	for (i=0;i < NumSamps;i++)
 	{
 		int temp = StartIndex + i;
 		excell_app->addData(temp, 3, (i*TIME_SCALE).ToString(), "C" + temp.ToString(), "D" + temp.ToString(), 1, "");
@@ -324,30 +326,29 @@ void MyXLStest(String^ OutFileName,int TestSelected)
 	EndIndex = StartIndex + i;
 
 	StartIndex = 13;
-	for (i=0;i < NumSamples[0];i++)
+	for (i=0;i < NumSamps;i++)
 	{
 		int temp = StartIndex + i;
-		int temp1 = SampleArray[0][i];
+		int temp1 = SampleArray[0][i+ FormStartIndex];
 		excell_app->addData(temp, 5, (temp1).ToString(), "E" + temp.ToString(), "F" + temp.ToString(), 1, "");
 
 	}
 	//add second series
 	StartIndex = 13;
-	for (i=0;i < NumSamples[1];i++)
+	for (i=0;i < NumSamps;i++)
 	{
 		int temp = StartIndex + i;
-		int temp1 = SampleArray[1][i];
+		int temp1 = SampleArray[1][i+ FormStartIndex];
 		excell_app->addData(temp, 7, (temp1).ToString(), "G" + temp.ToString(), "H" + temp.ToString(), 1, "");
 
 	}
 	//add third series
 	StartIndex = 13;
-	for (i=0;i < NumSamples[2];i++)
+	for (i=0;i < NumSamps;i++)
 	{
 		int temp = StartIndex + i;
-		int temp1 = SampleArray[2][i];
+		int temp1 = SampleArray[2][i+ FormStartIndex];
 		excell_app->addData(temp, 9, (temp1).ToString(), "I" + temp.ToString(), "J" + temp.ToString(), 1, "");
-
 	}
 
 	//Add X data range 

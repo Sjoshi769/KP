@@ -9,7 +9,7 @@
 
 #include "KatPotMonitor.h"
 using namespace System;
-void MyXLStest(String^ OutputFileName, int TestSelected);
+void MyXLStest(String^ OutFileName, int TestSelected, int FormStartIndex, int FormEndIndex);
 
 #include "Form1.h"
 
@@ -274,7 +274,7 @@ int main(array<System::String ^> ^args)
 			SampleArray[TestCount][Offset++] = NewLoadValues[3];
 			Val += 4;
 			NumSamples[TestCount]+=4;
-			if (Val >= 4*2)
+			if (Val >= 4*20)
 			{
 				TestCount++;
 				if (TestCount < 3)
