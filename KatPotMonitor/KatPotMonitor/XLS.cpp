@@ -42,6 +42,7 @@ extern gcroot<KatPotMonitor::Form1^> main_form;
 		private: gcroot<Microsoft::Office::Interop::Excel::ChartObject^> myChart;
 	    private: gcroot<Microsoft::Office::Interop::Excel::Axis^>  myAxis;
 	    private: gcroot<Microsoft::Office::Interop::Excel::Series^> mySeries;
+	    private: gcroot<Microsoft::Office::Interop::Excel::Range^> X_range;
 
 	
 		public: CreateExcelDoc()
@@ -86,6 +87,11 @@ extern gcroot<KatPotMonitor::Form1^> main_form;
 			//workbook->SaveAs(Filename, Microsoft::Office::Interop::Excel::XlFileFormat::xlWorkbookDefault, Type::Missing, Type::Missing, true, false, XlSaveAsAccessMode::xlNoChange, XlSaveConflictResolution::xlLocalSessionChanges, Type::Missing, Type::Missing);
 		}
 
+		public: void SetXRange(String^ R1, String^ R2)
+		{
+			X_range = worksheet->Range[R1, R2];
+		}
+
 		public: void XLDrawChart(int left, int top, int  width, int height, String^ R1, String^ R2 , int index, int TestType)
 		{
 
@@ -103,7 +109,7 @@ extern gcroot<KatPotMonitor::Form1^> main_form;
 			myChart->Chart->ChartType = Microsoft::Office::Interop::Excel::XlChartType::xlXYScatterSmooth;	
 			myChart->Chart->HasTitle = true;
 			mySeries = (Microsoft::Office::Interop::Excel::Series^) myChart->Chart->SeriesCollection(1);
-			mySeries->XValues = (workSheet_range);
+			mySeries->XValues = (X_range);
 
 			if (TestType==1)
 			{
@@ -344,7 +350,8 @@ void MyXLStest(String^ OutFileName,int TestSelected)
 
 	}
 
-
+	//Add X data range 
+	excell_app->SetXRange("C" + StartIndex.ToString(), "C" + (StartIndex + NumSamples[0]).ToString());
 
 	excell_app->XLDrawChart(600, 100, 400, 400, "E" + StartIndex.ToString(), "E" + (StartIndex + NumSamples[0]) .ToString(),0,TestSelected);
 	excell_app->XLDrawChart(600, 600, 400, 400, "G" + StartIndex.ToString(), "G" + (StartIndex + NumSamples[1]) .ToString(),1,TestSelected);
