@@ -462,8 +462,8 @@ namespace KatPotMonitor {
 	public: static int DegreeSelected=0;
 	private: static double RangeStart = 0;
 	private: static double RangeEnd = 0;
-	private: static int RangeStartIndex = 0;
-	private: static int RangeEndIndex = 0;
+	public: static int RangeStartIndex = 0;
+	public: static int RangeEndIndex = 0;
 	private: static bool RangeSelected = false;
 	public:  static array<double>^ SeriesMin;
 	public:  static array<double>^ SeriesMax;
@@ -1181,7 +1181,7 @@ private: System::Void saveFileToolStripMenuItem_Click(System::Object^  sender, S
 						}
 						//case 'xls':
 						{
-							MyXLStest(saveFileDialog1->FileName, this->TestSelected, this->RangeStartIndex, this->RangeEndIndex);
+							MyXLStest(saveFileDialog1->FileName, this->TestSelected, this->RangeStartIndex, this->RangeEndIndex, this->SeriesMin, this->SeriesMax, this->SeriesAverage);
 							myStream->Close();
 							//break;
 						}

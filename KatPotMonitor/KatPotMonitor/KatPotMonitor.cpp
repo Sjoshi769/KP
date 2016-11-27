@@ -9,7 +9,7 @@
 
 #include "KatPotMonitor.h"
 using namespace System;
-void MyXLStest(String^ OutFileName, int TestSelected, int FormStartIndex, int FormEndIndex);
+void MyXLStest(String^ OutFileName, int TestSelected, int FormStartIndex, int FormEndIndex, array<double>^ SeriesMin, array<double>^ SeriesMax, array<double>^ SeriesAverage);
 
 #include "Form1.h"
 
@@ -167,11 +167,24 @@ int main(array<System::String ^> ^args)
 						else if ((SerialPortReadArray[0] == 'S') && (SerialPortReadArray[1] == 'T') && \
 							(SerialPortReadArray[2] == 'O') && (SerialPortReadArray[3] == 'P'))
 						{
-								AveragingStarted = false;
-								TestCount++;
-								Offset = 0;
-								if (TestCount == MAX_NUM_TESTS)
-									TestCount = 0;
+							AveragingStarted = false;
+							if (TestCount==0)
+							{
+								main_form->RangeStartIndex = 0;
+								main_form->RangeEndIndex = NumSamples[TestCount];
+
+							}
+							else
+							{
+								if (main_form->RangeEndIndex > NumSamples[TestCount])
+									main_form->RangeEndIndex = NumSamples[TestCount];
+							}
+							TestCount++;
+							Offset = 0;
+							if (TestCount == MAX_NUM_TESTS)
+							{
+								TestCount = 0;
+							}
 						}
 						else if (AveragingStarted)				
 						{
@@ -274,7 +287,7 @@ int main(array<System::String ^> ^args)
 			SampleArray[TestCount][Offset++] = NewLoadValues[3];
 			Val += 4;
 			NumSamples[TestCount]+=4;
-			if (Val >= 4*20)
+			if (Val >= 4*2)
 			{
 				TestCount++;
 				if (TestCount < 3)

@@ -4,7 +4,7 @@
 //#include "stdafx.h"
 using namespace System;
 
-void MyXLStest(String^ OutFileName, int TestSelected, int FormStartIndex, int FormEndIndex);
+void MyXLStest(String^ OutFileName, int TestSelected, int FormStartIndex, int FormEndIndex, array<double>^ SeriesMin, array<double>^ SeriesMax, array<double>^ SeriesAverage);
 #include "Form1.h"
 
 //using namespace KatPotMonitor;
@@ -92,15 +92,13 @@ extern gcroot<KatPotMonitor::Form1^> main_form;
 			X_range = worksheet->Range[R1, R2];
 		}
 
-		public: void XLDrawChart(int left, int top, int  width, int height, String^ R1, String^ R2 , int index, int TestType)
+		public: void XLDrawChart(int left, int top, int  width, int height, String^ R1, String^ R2 , int index, int TestType, double Min, double Max, double Average)
 		{
 
 			//myxlChart = (Microsoft::Office::Interop::Excel::ChartObjects^) worksheet->ChartObjects(Type::Missing);
 			myChart =  myxlChart->Add(left, top, width, height);
             workSheet_range = worksheet->Range[R1, R2];
-			
-
-			
+					
 
             myChart->Chart->SetSourceData(workSheet_range, Microsoft::Office::Interop::Excel::XlRowCol::xlColumns);
 
@@ -110,6 +108,11 @@ extern gcroot<KatPotMonitor::Form1^> main_form;
 			myChart->Chart->HasTitle = true;
 			mySeries = (Microsoft::Office::Interop::Excel::Series^) myChart->Chart->SeriesCollection(1);
 			mySeries->XValues = (X_range);
+			mySeries->Name = mySeries->Name->Format("Min = {0}\n", Min);
+			mySeries->Name += mySeries->Name->Format("Max = {0}\n", Max);
+			mySeries->Name += mySeries->Name->Format("Average = {0}\n", Average);
+
+
 
 			if (TestType==1)
 			{
@@ -228,7 +231,7 @@ fcolor)
     };
 	
 
-void MyXLStest(String^ OutFileName,int TestSelected, int FormStartIndex, int FormEndIndex)
+void MyXLStest(String^ OutFileName,int TestSelected, int FormStartIndex, int FormEndIndex, array<double>^ SeriesMin, array<double>^ SeriesMax, array<double>^ SeriesAverage)
 {
 	int i;
 	int StartIndex, EndIndex;
@@ -354,9 +357,12 @@ void MyXLStest(String^ OutFileName,int TestSelected, int FormStartIndex, int For
 	//Add X data range 
 	excell_app->SetXRange("C" + StartIndex.ToString(), "C" + (StartIndex + NumSamples[0]).ToString());
 
-	excell_app->XLDrawChart(600, 100, 400, 400, "E" + StartIndex.ToString(), "E" + (StartIndex + NumSamples[0]) .ToString(),0,TestSelected);
-	excell_app->XLDrawChart(600, 600, 400, 400, "G" + StartIndex.ToString(), "G" + (StartIndex + NumSamples[1]) .ToString(),1,TestSelected);
-	excell_app->XLDrawChart(600, 1100, 400, 400, "I" + StartIndex.ToString(), "I" + (StartIndex + NumSamples[2]) .ToString(),2,TestSelected);
+	excell_app->XLDrawChart(600, 100, 400, 400, "E" + StartIndex.ToString(), "E" + (StartIndex + NumSamples[0]) .ToString(),0,TestSelected,
+		SeriesMin[0], SeriesMax[0], SeriesAverage[0]);
+	excell_app->XLDrawChart(600, 600, 400, 400, "G" + StartIndex.ToString(), "G" + (StartIndex + NumSamples[1]) .ToString(),1,TestSelected,
+		SeriesMin[1], SeriesMax[1], SeriesAverage[1]);
+	excell_app->XLDrawChart(600, 1100, 400, 400, "I" + StartIndex.ToString(), "I" + (StartIndex + NumSamples[2]) .ToString(),2,TestSelected,
+		SeriesMin[2], SeriesMax[2], SeriesAverage[2]);
 
 	//add Data to cells
 	//excell_app->addData(7, 2, "114287", "B7", "B7","#,##0");
