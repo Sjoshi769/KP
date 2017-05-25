@@ -4,7 +4,7 @@
 #define _WIRELESS_MONITOR_H
 
 #define SERIAL_PORT_PACKET_SIZE 6
-#define MAX_NUM_TESTS	3
+#define MAX_NUM_TESTS	1
 #define TIME_SCALE      (1000/5)
 typedef enum WirelessMonitorStatus
 {

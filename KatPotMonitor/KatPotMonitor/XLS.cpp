@@ -4,6 +4,7 @@
 //#include "stdafx.h"
 using namespace System;
 
+
 void MyXLStest(String^ OutFileName, int TestSelected, int FormStartIndex, int FormEndIndex, array<double>^ SeriesMin, array<double>^ SeriesMax, array<double>^ SeriesAverage);
 #include "Form1.h"
 
@@ -237,81 +238,81 @@ void MyXLStest(String^ OutFileName,int TestSelected, int FormStartIndex, int For
 	int StartIndex, EndIndex;
 	CreateExcelDoc* excell_app = new CreateExcelDoc();         
 	//creates the logo header
-	excell_app->createHeaders(3, 6, "KatPot Systems", "F3", "H3", 2,COLOR_YELLOW,true,10,"n");
+	excell_app->createHeaders(3, 4, "KatPot Systems", "D3", "F3", 2,COLOR_YELLOW,true,10,"n");
 
 
 	//create test info header
 	if (main_form->TestSelected==0)
-		excell_app->createHeaders(4, 6, "Shear Test", "F4", "F4", 0,COLOR_YELLOW,true,10,"n");
+		excell_app->createHeaders(4, 4, "Shear Test", "D4", "D4", 0,COLOR_YELLOW,true,10,"n");
 	else
-		excell_app->createHeaders(4, 6, "Peel Test", "F4", "F4", 0,COLOR_YELLOW,true,10,"n");
+		excell_app->createHeaders(4, 4, "Peel Test", "D4", "D4", 0,COLOR_YELLOW,true,10,"n");
 
-		excell_app->createHeaders(4, 7, "Report For", "G4", "G4", 0,COLOR_YELLOW,true,10,"n");
+		excell_app->createHeaders(4, 5, "Report For", "G4", "G4", 0,COLOR_YELLOW,true,10,"n");
 
 	if (main_form->DegreeSelected==0)
-		excell_app->createHeaders(4, 8, "90 Degree", "H4", "H4", 0,COLOR_YELLOW,true,10,"n");
+		excell_app->createHeaders(4, 6, "90 Degree", "F4", "F4", 0,COLOR_YELLOW,true,10,"n");
 	else
-		excell_app->createHeaders(4, 8, "180 Degree", "H4", "H4", 0,COLOR_YELLOW,true,10,"n");
+		excell_app->createHeaders(4, 6, "180 Degree", "F4", "F4", 0,COLOR_YELLOW,true,10,"n");
 
 
 	//create header for item and customer name
-	excell_app->createHeaders(5, 3, "Item Name", "C5", "D5", 1, COLOR_YELLOW, true,10,"");
-	excell_app->createHeaders(5, 5, main_form->toolStripTextBox2->Text, "E5", "F5", 1, COLOR_YELLOW, true,10,"");
-	excell_app->createHeaders(5, 7, "Customer Name", "G5", "H5", 1, COLOR_YELLOW, true,10,"");
-	excell_app->createHeaders(5, 9, main_form->toolStripTextBox1->Text, "I5", "J5", 1, COLOR_YELLOW, true,10,"");
+	excell_app->createHeaders(5, 1, "Item Name", "A5", "B5", 1, COLOR_YELLOW, true,10,"");
+	excell_app->createHeaders(5, 3, main_form->toolStripTextBox2->Text, "C5", "D5", 1, COLOR_YELLOW, true,10,"");
+	excell_app->createHeaders(5, 5, "Customer Name", "F5", "G5", 1, COLOR_YELLOW, true,10,"");
+	excell_app->createHeaders(5, 7, main_form->toolStripTextBox1->Text, "G5", "H5", 1, COLOR_YELLOW, true,10,"");
 
 	//create header for item and drawing  number
-	excell_app->createHeaders(6, 3, "Item No.", "C6", "D6", 1, COLOR_YELLOW, true,10,"");
-	excell_app->createHeaders(6, 5, main_form->toolStripTextBox3->Text, "E6", "F6", 1, COLOR_YELLOW, true,10,"");
-	excell_app->createHeaders(6, 7, "Drawing Number", "G6", "H6", 1, COLOR_YELLOW, true,10,"");
-	excell_app->createHeaders(6, 9, main_form->toolStripTextBox4->Text, "I6", "J6", 1, COLOR_YELLOW, true,10,"");
+	excell_app->createHeaders(6, 1, "Item No.", "A6", "B6", 1, COLOR_YELLOW, true,10,"");
+	excell_app->createHeaders(6, 3, main_form->toolStripTextBox3->Text, "C6", "D6", 1, COLOR_YELLOW, true,10,"");
+	excell_app->createHeaders(6, 5, "Drawing Number", "E6", "F6", 1, COLOR_YELLOW, true,10,"");
+	excell_app->createHeaders(6, 7, main_form->toolStripTextBox4->Text, "G6", "H6", 1, COLOR_YELLOW, true,10,"");
 
 
 
 	//create header for inspection  and manufacturing  dates
-	excell_app->createHeaders(7, 3, "Inspection Date", "C7", "D7", 1, COLOR_YELLOW, true,10,"");
-	excell_app->createHeaders(7, 5, main_form->toolStripTextBox6->Text, "E7", "F7", 1, COLOR_YELLOW, true,10,"");
-	excell_app->createHeaders(7, 7, "Manufacturing Date", "G7", "H7", 1, COLOR_YELLOW, true,10,"");
-	excell_app->createHeaders(7, 9, main_form->toolStripTextBox5->Text, "I7", "J7", 1, COLOR_YELLOW, true,10,"");
+	excell_app->createHeaders(7, 1, "Inspection Date", "A7", "B7", 1, COLOR_YELLOW, true,10,"");
+	excell_app->createHeaders(7, 3, main_form->toolStripTextBox6->Text, "C7", "D7", 1, COLOR_YELLOW, true,10,"");
+	excell_app->createHeaders(7, 5, "Manufacturing Date", "E7", "F7", 1, COLOR_YELLOW, true,10,"");
+	excell_app->createHeaders(7, 7, main_form->toolStripTextBox5->Text, "G7", "H7", 1, COLOR_YELLOW, true,10,"");
 
 
 	//create header for batch No. and   and manufacturing  dates
-	excell_app->createHeaders(8, 7, "Batch No.", "G8", "H8", 1, COLOR_YELLOW, true,10,"");
-	excell_app->createHeaders(8, 9, main_form->toolStripTextBox7->Text, "I8", "J8", 1, COLOR_YELLOW, true,10,"");
+	excell_app->createHeaders(8, 5, "Batch No.", "E8", "F8", 1, COLOR_YELLOW, true,10,"");
+	excell_app->createHeaders(8, 7, main_form->toolStripTextBox7->Text, "G8", "H8", 1, COLOR_YELLOW, true,10,"");
 
 
 	//create header for material  and color
-	excell_app->createHeaders(9, 3, "Material Type", "C9", "D9", 1, COLOR_YELLOW, true,10,"");
-	excell_app->createHeaders(9, 5, main_form->toolStripTextBox8->Text, "E9", "F9", 1, COLOR_YELLOW, true,10,"");
-	excell_app->createHeaders(9, 7, "Color ", "G9", "H9", 1, COLOR_YELLOW, true,10,"");
-	excell_app->createHeaders(9, 9, main_form->toolStripTextBox10->Text, "I9", "J9", 1, COLOR_YELLOW, true,10,"");
+	excell_app->createHeaders(9, 1, "Material Type", "A9", "B9", 1, COLOR_YELLOW, true,10,"");
+	excell_app->createHeaders(9, 3, main_form->toolStripTextBox8->Text, "C9", "D9", 1, COLOR_YELLOW, true,10,"");
+	excell_app->createHeaders(9, 5, "Color ", "E9", "F9", 1, COLOR_YELLOW, true,10,"");
+	excell_app->createHeaders(9, 7, main_form->toolStripTextBox10->Text, "G9", "H9", 1, COLOR_YELLOW, true,10,"");
 
 
 	//create header for width   and min length
-	excell_app->createHeaders(10, 3, "Width ", "C10", "D10", 1, COLOR_YELLOW, true,10,"");
-	excell_app->createHeaders(10, 5, main_form->toolStripTextBox9->Text, "E10", "F10", 1, COLOR_YELLOW, true,10,"");
-	excell_app->createHeaders(10, 7, "Minimum Length ", "G10", "H10", 1, COLOR_YELLOW, true,10,"");
-	excell_app->createHeaders(10, 9, main_form->toolStripTextBox12->Text, "I10", "J12", 1, COLOR_YELLOW, true,10,"");
+	excell_app->createHeaders(10, 1, "Width ", "A10", "B10", 1, COLOR_YELLOW, true,10,"");
+	excell_app->createHeaders(10, 3, main_form->toolStripTextBox9->Text, "C10", "D10", 1, COLOR_YELLOW, true,10,"");
+	excell_app->createHeaders(10, 5, "Minimum Length ", "E10", "F10", 1, COLOR_YELLOW, true,10,"");
+	excell_app->createHeaders(10, 7, main_form->toolStripTextBox12->Text, "G10", "H12", 1, COLOR_YELLOW, true,10,"");
 
 
 	//create header for weight applied
-	excell_app->createHeaders(11, 7, "Weigth Applied", "G11", "H11", 1, COLOR_YELLOW, true,10,"");
-	excell_app->createHeaders(11, 9, main_form->toolStripTextBox11->Text, "I11", "J11", 1, COLOR_YELLOW, true,10,"");
+	excell_app->createHeaders(11, 5, "Weigth Applied", "E11", "F11", 1, COLOR_YELLOW, true,10,"");
+	excell_app->createHeaders(11, 7, main_form->toolStripTextBox11->Text, "G11", "H11", 1, COLOR_YELLOW, true,10,"");
 
 
 	//create Table header headre
 
-	excell_app->createHeaders(12, 3, "Sample  Number", "C12", "D12", 1, COLOR_GRAY, true,10,"");
-	excell_app->createHeaders(12, 5, "Test-1 ", "E12", "F12", 1, COLOR_GRAY, true,10,"");
+	excell_app->createHeaders(12, 1, "Sample  Time (mili seconds)", "A12", "B12", 1, COLOR_GRAY, true,10,"");
+	excell_app->createHeaders(12, 3, "Test-1 ", "C12", "D12", 1, COLOR_GRAY, true,10,"");
 
-	excell_app->createHeaders(12, 7, "Test-2", "G12", "H12", 1, COLOR_GRAY, true,10,"");
-	excell_app->createHeaders(12, 9, "Test-3", "I12", "J12", 1, COLOR_GRAY, true,10,"");
+	//excell_app->createHeaders(12, 5, "Test-2", "G12", "H12", 1, COLOR_GRAY, true,10,"");
+	//excell_app->createHeaders(12, 7, "Test-3", "I12", "J12", 1, COLOR_GRAY, true,10,"");
 
 
 	StartIndex = 13;
 
 	//add first series
-	//int max = NumSamples[0];
+	int max = NumSamples[0];
 	//if (NumSamples[1] > max)
 	//	max = NumSamples[1];
 	//if (NumSamples[2] > max)
@@ -323,7 +324,7 @@ void MyXLStest(String^ OutFileName,int TestSelected, int FormStartIndex, int For
 	for (i=0;i < NumSamps;i++)
 	{
 		int temp = StartIndex + i;
-		excell_app->addData(temp, 3, (i*TIME_SCALE).ToString(), "C" + temp.ToString(), "D" + temp.ToString(), 1, "");
+		excell_app->addData(temp, 1, (i*TIME_SCALE).ToString(), "A" + temp.ToString(), "B" + temp.ToString(), 1, "");
 	}
 
 	EndIndex = StartIndex + i;
@@ -333,36 +334,40 @@ void MyXLStest(String^ OutFileName,int TestSelected, int FormStartIndex, int For
 	{
 		int temp = StartIndex + i;
 		int temp1 = SampleArray[0][i+ FormStartIndex];
-		excell_app->addData(temp, 5, (temp1).ToString(), "E" + temp.ToString(), "F" + temp.ToString(), 1, "");
+		excell_app->addData(temp, 3, (temp1).ToString(), "C" + temp.ToString(), "D" + temp.ToString(), 1, "");
 
 	}
 	//add second series
+	//StartIndex = 13;
+	//for (i=0;i < NumSamps;i++)
+	//{
+	//	int temp = StartIndex + i;
+	//	int temp1 = SampleArray[1][i+ FormStartIndex];
+	//	excell_app->addData(temp, 5, (temp1).ToString(), "G" + temp.ToString(), "H" + temp.ToString(), 1, "");
+	//
+	//}
+	////add third series
 	StartIndex = 13;
-	for (i=0;i < NumSamps;i++)
-	{
-		int temp = StartIndex + i;
-		int temp1 = SampleArray[1][i+ FormStartIndex];
-		excell_app->addData(temp, 7, (temp1).ToString(), "G" + temp.ToString(), "H" + temp.ToString(), 1, "");
-
-	}
-	//add third series
-	StartIndex = 13;
-	for (i=0;i < NumSamps;i++)
-	{
-		int temp = StartIndex + i;
-		int temp1 = SampleArray[2][i+ FormStartIndex];
-		excell_app->addData(temp, 9, (temp1).ToString(), "I" + temp.ToString(), "J" + temp.ToString(), 1, "");
-	}
+	//for (i=0;i < NumSamps;i++)
+	//{
+	//	int temp = StartIndex + i;
+	//	int temp1 = SampleArray[2][i+ FormStartIndex];
+	//	excell_app->addData(temp, 7, (temp1).ToString(), "I" + temp.ToString(), "J" + temp.ToString(), 1, "");
+	//}
 
 	//Add X data range 
-	excell_app->SetXRange("C" + StartIndex.ToString(), "C" + (StartIndex + NumSamples[0]).ToString());
+	excell_app->SetXRange("A" + StartIndex.ToString(), "A" + (StartIndex + NumSamples[0]).ToString());
 
-	excell_app->XLDrawChart(600, 100, 400, 400, "E" + StartIndex.ToString(), "E" + (StartIndex + NumSamples[0]) .ToString(),0,TestSelected,
+	//excell_app->XLDrawChart(600, 100, 400, 400, "E" + StartIndex.ToString(), "E" + (StartIndex + NumSamples[0]) .ToString(),0,TestSelected,
+	//	SeriesMin[0], SeriesMax[0], SeriesAverage[0]);
+
+	excell_app->XLDrawChart(10, 15*(NumSamps + 13), 400, 400, "C" + StartIndex.ToString(), "C" + (StartIndex + NumSamples[0]) .ToString(),0,TestSelected,
 		SeriesMin[0], SeriesMax[0], SeriesAverage[0]);
-	excell_app->XLDrawChart(600, 600, 400, 400, "G" + StartIndex.ToString(), "G" + (StartIndex + NumSamples[1]) .ToString(),1,TestSelected,
-		SeriesMin[1], SeriesMax[1], SeriesAverage[1]);
-	excell_app->XLDrawChart(600, 1100, 400, 400, "I" + StartIndex.ToString(), "I" + (StartIndex + NumSamples[2]) .ToString(),2,TestSelected,
-		SeriesMin[2], SeriesMax[2], SeriesAverage[2]);
+
+	//excell_app->XLDrawChart(600, 600, 400, 400, "G" + StartIndex.ToString(), "G" + (StartIndex + NumSamples[1]) .ToString(),1,TestSelected,
+	//	SeriesMin[1], SeriesMax[1], SeriesAverage[1]);
+	//excell_app->XLDrawChart(600, 1100, 400, 400, "I" + StartIndex.ToString(), "I" + (StartIndex + NumSamples[2]) .ToString(),2,TestSelected,
+	//	SeriesMin[2], SeriesMax[2], SeriesAverage[2]);
 
 	//add Data to cells
 	//excell_app->addData(7, 2, "114287", "B7", "B7","#,##0");

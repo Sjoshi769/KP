@@ -566,8 +566,8 @@ namespace KatPotMonitor {
 			series1 = gcnew array<System::Windows::Forms::DataVisualization::Charting::Series^>(MAX_NUM_TESTS);
 
 			series1[0] = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
-			series1[1] = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
-			series1[2] = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
+			//series1[1] = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
+			//series1[2] = (gcnew System::Windows::Forms::DataVisualization::Charting::Series());
 
 
 			this->menuStrip1 = (gcnew System::Windows::Forms::MenuStrip());
