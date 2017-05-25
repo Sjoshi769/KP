@@ -126,7 +126,7 @@ int InitSerialPort( SerialPort^ _serialPort, String^ PortName, int NumPorts, int
 		}
 
 		
-		if (TestSelected == 0) //peel test
+		if (TestSelected == 1) //peel test
 		{
 			if ((cTemp[1] == 0x0D) && (cTemp[0] == 0x0A)&&(iTemp > 6))
 			{
@@ -207,7 +207,7 @@ bool GetSerialPortPacket( SerialPort^ _serialPort, array<unsigned char>^ readArr
 	//random_device rd();
 	//mt19937 gen(rd());
 	static int l=0;
-	if (TestSelected==0)
+	if (TestSelected==1)
 	{
 		if (count==100)
 		{
@@ -248,7 +248,7 @@ bool GetSerialPortPacket( SerialPort^ _serialPort, array<unsigned char>^ readArr
 		Thread::Sleep(100);
 		return true;
 	}
-	else if (TestSelected==1)
+	else if (TestSelected==0)
 	{
 
 		int m;
@@ -297,7 +297,7 @@ bool GetSerialPortPacket( SerialPort^ _serialPort, array<unsigned char>^ readArr
 	int BytesRead = 0;
 	int BytesToRead;
 
-	if (TestSelected)
+	if (TestSelected==0)
 		BytesToRead = 11*3;
 	else
 		BytesToRead = SERIAL_PORT_PACKET_SIZE;

@@ -151,7 +151,7 @@ int main(array<System::String ^> ^args)
 		{
 			if (GetSerialPortPacket(_serialPort, SerialPortReadArray,main_form->TestSelected))
 			{
-				if (main_form->TestSelected==0)	//peel test
+				if (main_form->TestSelected==1)	//peel test
 				{
 					if ((SerialPortReadArray[5] == 0x0A) && (SerialPortReadArray[4] == 0x0D))
 					{
@@ -197,7 +197,7 @@ int main(array<System::String ^> ^args)
 						}
 					}
 				}
-				else if (main_form->TestSelected==1) 
+				else if (main_form->TestSelected==0) 
 				{
 
 					if ((SerialPortReadArray[0] == 'T') && (SerialPortReadArray[1] == '1')  && (SerialPortReadArray[2] == '=') && (SerialPortReadArray[9] == 0x0D) && (SerialPortReadArray[10] == 0x0A) 

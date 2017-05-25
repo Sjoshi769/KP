@@ -1022,7 +1022,7 @@ namespace KatPotMonitor {
 			this->chart1->ChartAreas[0]->AxisY->ScaleView->Zoomable = false;
 			this->chart1->ChartAreas[0]->AxisX->Minimum = 0;
 			this->chart1->ChartAreas[0]->AxisX->Title = "Time (mili seconds)";
-			this->chart1->ChartAreas[0]->AxisY->Title = "Load (Newton)";
+			this->chart1->ChartAreas[0]->AxisY->Title = "Load (Grams)";
 			this->chart1->SelectionRangeChanged += gcnew System::EventHandler<CursorEventArgs^>(this, &Form1::Chart1_SelectionRangeChanged);
 			this->chart1->SelectionRangeChanging += gcnew System::EventHandler<CursorEventArgs^>(this, &Form1::Chart1_SelectionRangeChanging);
 			//this->chart1->ChartAreas[0]->AxisX->ScaleView->AutoScroll = true;
