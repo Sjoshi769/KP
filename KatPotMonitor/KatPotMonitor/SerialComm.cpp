@@ -126,7 +126,7 @@ int InitSerialPort( SerialPort^ _serialPort, String^ PortName, int NumPorts, int
 		}
 
 		
-		if (TestSelected == 1) //peel test
+		if (TestSelected == 0) //peel test
 		{
 			if ((cTemp[1] == 0x0D) && (cTemp[0] == 0x0A)&&(iTemp > 6))
 			{
@@ -207,44 +207,88 @@ bool GetSerialPortPacket( SerialPort^ _serialPort, array<unsigned char>^ readArr
 	//random_device rd();
 	//mt19937 gen(rd());
 	static int l=0;
-	if (count==100)
+	if (TestSelected==0)
 	{
-		readArray[0] = 'S';
-		readArray[1] = 'T';
-		readArray[2] = 'R';
-		readArray[3] = 'T';
-		readArray[4] = '\r';
-		readArray[5] = '\n';
+		if (count==100)
+		{
+			readArray[0] = 'S';
+			readArray[1] = 'T';
+			readArray[2] = 'R';
+			readArray[3] = 'T';
+			readArray[4] = '\r';
+			readArray[5] = '\n';
+		}
+		else if (count==200)
+		{
+			readArray[0] = 'S';
+			readArray[1] = 'T';
+			readArray[2] = 'O';
+			readArray[3] = 'P';
+			readArray[4] = '\r';
+			readArray[5] = '\n';
+			count = 0;
+		}
+		else
+		{
+			int k = l;
+			if (k < 0) k = -k;
+			k = k % 10000;
+			readArray[0] = '0' + (k/1000);
+			k = k % 1000;
+			readArray[1] = '0' + (k/100);
+			k = k % 100;
+			readArray[2] = '0' + (k/10);
+			k = k % 10;
+			readArray[3] = '0' + k;
+			readArray[4] = '\r';
+			readArray[5] = '\n';
+		}
+		count++;
+		l++;
+		Thread::Sleep(100);
+		return true;
 	}
-	else if (count==200)
+	else if (TestSelected==1)
 	{
-		readArray[0] = 'S';
-		readArray[1] = 'T';
-		readArray[2] = 'O';
-		readArray[3] = 'P';
-		readArray[4] = '\r';
-		readArray[5] = '\n';
-		count = 0;
+
+		int m;
+		int offset = 0;
+		for (m=0;m<3;m++)
+		{
+
+			int k = l;
+			if (k < 0) k = -k;
+
+			readArray[offset++] = 'T';
+			readArray[offset++] = '1' + m;
+			readArray[offset++] = '=';
+
+			k = k % 1000000;
+			readArray[offset++] = '0' + (k/100000);
+			k = k % 100000;
+			readArray[offset++] = '0' + (k/10000);
+			k = k % 10000;
+			readArray[offset++] = '0' + (k/1000);
+			k = k % 1000;
+			readArray[offset++] = '0' + (k/100);
+			k = k % 100;
+			readArray[offset++] = '0' + (k/10);
+			k = k % 10;
+			readArray[offset++] = '0' + (k);
+
+			readArray[offset++] = '\r';
+			readArray[offset++] = '\n';
+
+			l = l + 10;
+		}
+
+		return true;
+
 	}
 	else
 	{
-		int k = l;
-		if (k < 0) k = -k;
-		k = k % 10000;
-		readArray[0] = '0' + (k/1000);
-		k = k % 1000;
-		readArray[1] = '0' + (k/100);
-		k = k % 100;
-		readArray[2] = '0' + (k/10);
-		k = k % 10;
-		readArray[3] = '0' + k;
-		readArray[4] = '\r';
-		readArray[5] = '\n';
+		return false;
 	}
-	count++;
-	l++;
-	Thread::Sleep(100);
-	return true;
 
 
 
